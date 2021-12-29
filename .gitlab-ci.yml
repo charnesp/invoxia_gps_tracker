@@ -1,6 +1,61 @@
-stages:
-- test
-sast:
-  stage: test
+# Enable Static Application Security Testing
 include:
 - template: Security/SAST.gitlab-ci.yml
+
+# Run tests and coverage analysis
+default:
+  image: python:3.9
+  tags:
+    - docker
+
+.test_script: &test_script
+  script:
+    - python -v   # Print out Python version for debugging
+    - pip install -U pip setuptools
+    - pip install -U tox
+    - tox
+
+py3.9:
+  image: python:3.9
+  <<: *test_script
+
+py3.10:
+  image: python:3.10
+  <<: *test_script
+
+# Generate documentation
+docs:
+  script:
+    - pip install -U tox
+    - tox -e docs
+
+# Create package files for this project when a tag is defined
+variables:
+  PACKAGE_REGISTRY_URL: "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/invoxia/${CI_COMMIT_TAG}"
+
+package:
+  rules:
+    - if: $CI_COMMIT_TAG =~ /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$/
+  script:
+    - pip install build
+    - python -m build
+    - mkdir assets
+    - cd dist
+    - 'for file in *; do curl --header "JOB-TOKEN: $CI_JOB_TOKEN" --upload-file $file "${PACKAGE_REGISTRY_URL}/$file"; touch ../assets/$file; done'
+  artifacts:
+    paths:
+      - assets/
+    expire_in: 30min
+    when: on_success
+
+release:
+  image: registry.gitlab.com/gitlab-org/release-cli:latest
+  dependencies:
+    - package
+  needs: ["docs", "py3.9", "py3.10", "package"]
+  rules:
+    - if: $CI_COMMIT_TAG =~ /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$/
+  script:
+    - export WHEEL_FILE=$(basename assets/*.whl)
+    - export TARGZ_FILE=$(basename assets/*.tar.gz)
+    - release-cli create --name "Release $CI_COMMIT_TAG" --description "invoxia $CI_COMMIT_TAG" --tag-name "$CI_COMMIT_TAG" --ref "$CI_COMMIT_TAG" --assets-link "{\"url\":\"${PACKAGE_REGISTRY_URL}/${TARGZ_FILE}\",\"name\":\"Source package\"}" --assets-link "{\"url\":\"${PACKAGE_REGISTRY_URL}/${WHEEL_FILE}\",\"name\":\"Wheel package\"}"
