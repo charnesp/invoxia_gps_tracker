@@ -1,15 +1,9 @@
 .. These are examples of badges you might want to add to your README:
    please update the URLs accordingly
 
-    .. image:: https://api.cirrus-ci.com/github/<USER>/invoxia.svg?branch=main
-        :alt: Built Status
-        :target: https://cirrus-ci.com/github/<USER>/invoxia
     .. image:: https://readthedocs.org/projects/invoxia/badge/?version=latest
         :alt: ReadTheDocs
         :target: https://invoxia.readthedocs.io/en/stable/
-    .. image:: https://img.shields.io/coveralls/github/<USER>/invoxia/main.svg
-        :alt: Coveralls
-        :target: https://coveralls.io/r/<USER>/invoxia
     .. image:: https://img.shields.io/pypi/v/invoxia.svg
         :alt: PyPI-Server
         :target: https://pypi.org/project/invoxia/
@@ -23,6 +17,12 @@
 .. image:: https://img.shields.io/badge/-PyScaffold-005CA0?logo=pyscaffold
     :alt: Project generated with PyScaffold
     :target: https://pyscaffold.org/
+.. image:: https://gitlab.com/ezlo.picori/invoxia/badges/main/pipeline.svg
+    :alt: Pipeline status
+    :target: https://gitlab.com/ezlo.picori/invoxia/-/commits/main
+.. image:: https://gitlab.com/ezlo.picori/invoxia/badges/main/coverage.svg
+    :alt: Coverage
+    :target: https://gitlab.com/ezlo.picori/invoxia/-/commits/main
 
 =======
 invoxia
