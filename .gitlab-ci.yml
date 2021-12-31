@@ -24,10 +24,15 @@ py3.10:
   <<: *test_script
 
 # Generate documentation
-docs:
+pages:
   script:
     - pip install -U tox
     - tox -e docs
+    - mv docs/_build/html public
+  artifacts:
+    paths:
+      - public
+
 
 # Create package files for this project when a tag is defined
 variables:
@@ -52,7 +57,7 @@ release:
   image: registry.gitlab.com/gitlab-org/release-cli:latest
   dependencies:
     - package
-  needs: ["docs", "py3.9", "py3.10", "package"]
+  needs: ["pages", "py3.9", "py3.10", "package"]
   rules:
     - if: $CI_COMMIT_TAG =~ /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$/
   script:
