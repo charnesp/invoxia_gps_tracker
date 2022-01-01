@@ -3,19 +3,17 @@
 from __future__ import annotations
 
 import datetime
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
+from json.decoder import JSONDecodeError
+from typing import TYPE_CHECKING, Any, List, Optional
 
 import requests
 
 from .datatypes import Device, Tracker, TrackerData, User
+from .exceptions import HttpException
 from .url_provider import UrlProvider
 
 if TYPE_CHECKING:
     from .config import Config
-
-    JsonValue = Union[Dict[str, Any], List[Any], int, str, float, bool, None]
-    JsonDict = Dict[str, JsonValue]
-    JsonList = List[JsonDict]
 
 
 class SyncClient:
@@ -27,43 +25,48 @@ class SyncClient:
 
         self._url_provider = UrlProvider(api_url=config.api_url)
 
-    def _query(self, url: str) -> Union[JsonDict, JsonList]:
+    def _query(self, url: str) -> Any:
         """Query the API synchronously and return the decoded JSON response."""
 
+        # Run the request
         request = requests.get(url=url, auth=(self._cfg.username, self._cfg.password))
+
+        # Extract JSON answer if possible
+        json_answer = None
+        try:
+            json_answer = request.json()
+        except JSONDecodeError:
+            pass
+
+        # Raise known exception if required
+        exception = HttpException.get(request.status_code)
+        if exception is not None:
+            raise exception(json_answer=json_answer)
+
+        # Raise unknown exception if required
         request.raise_for_status()
 
-        return request.json()
-
-    def _query_list(self, url: str) -> JsonList:
-        """Query the API and return a list of JSON objects."""
-        result = self._query(url)
-        return result if isinstance(result, list) else []
-
-    def _query_dict(self, url: str) -> JsonDict:
-        """Query the API and return a list of JSON objects."""
-        result = self._query(url)
-        return result if isinstance(result, dict) else {}
+        return json_answer
 
     def get_user(self, user_id: int) -> User:
         """Return a user referenced by its id."""
-        data: JsonDict = self._query_dict(self._url_provider.user(user_id))
+        data = self._query(self._url_provider.user(user_id))
         return User(**data)
 
     def get_users(self) -> List[User]:
         """Return all users associated to credentials."""
-        data: JsonList = self._query_list(self._url_provider.users())
+        data = self._query(self._url_provider.users())
         return [User(**item) for item in data]
 
     def get_device(self, device_id: int) -> Device:
         """Return a device referenced by its id."""
 
-        data: JsonDict = self._query_dict(self._url_provider.device(device_id))
+        data = self._query(self._url_provider.device(device_id))
         return Device.get(data)
 
     def get_devices(self) -> List[Device]:
         """Return all devices associated to credentials."""
-        data: JsonList = self._query_list(self._url_provider.devices())
+        data = self._query(self._url_provider.devices())
         return [Device.get(item) for item in data]
 
     def get_locations(
@@ -84,7 +87,7 @@ class SyncClient:
 
         res = []
         while max_count > 0:
-            data: JsonList = self._query_list(
+            data = self._query(
                 self._url_provider.locations(
                     device_id=device.id,
                     not_after=not_after_ts,
