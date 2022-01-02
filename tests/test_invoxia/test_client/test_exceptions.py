@@ -4,8 +4,14 @@ import uuid
 
 import pytest
 
+from invoxia.client.config import Config
 from invoxia.client.datatypes import Device
-from invoxia.client.exceptions import UnknownDeviceType
+from invoxia.client.exceptions import (
+    ForbiddenQuery,
+    UnauthorizedQuery,
+    UnknownDeviceType,
+)
+from invoxia.client.sync import Client
 
 
 def test_unknown_device_type():
@@ -57,3 +63,22 @@ def test_known_device_type_iphone():
         Device.get(device_data)
     except UnknownDeviceType:
         pytest.fail("UnknownDeviceType raised unexpectedly.")
+
+
+def test_unauthorized_query():
+    """Check exception raised with incorrect credentials."""
+
+    cfg = Config("", "")
+    client = Client(cfg)
+
+    with pytest.raises(UnauthorizedQuery):
+        client.get_users()
+
+
+def test_forbidden_query(config_authenticated: Config):
+    """Check exception raised with forbidden query."""
+
+    client = Client(config_authenticated)
+
+    with pytest.raises(ForbiddenQuery):
+        client.get_user(1)

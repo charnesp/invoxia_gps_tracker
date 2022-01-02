@@ -26,7 +26,8 @@ def _api_url_converter(val: str) -> str:
 
 def _password_repr(val: str) -> str:
     """Change representation of password to hide its content."""
-    return f"'{val[0]}******{val[-1]}'"
+    del val
+    return "'********'"
 
 
 @attrs.define(auto_attribs=True)
