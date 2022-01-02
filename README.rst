@@ -1,12 +1,6 @@
 .. These are examples of badges you might want to add to your README:
    please update the URLs accordingly
 
-    .. image:: https://img.shields.io/pypi/v/invoxia.svg
-        :alt: PyPI-Server
-        :target: https://pypi.org/project/invoxia/
-    .. image:: https://img.shields.io/conda/vn/conda-forge/invoxia.svg
-        :alt: Conda-Forge
-        :target: https://anaconda.org/conda-forge/invoxia
     .. image:: https://pepy.tech/badge/invoxia/month
         :alt: Monthly Downloads
         :target: https://pepy.tech/project/invoxia
@@ -23,6 +17,9 @@
 .. image:: https://readthedocs.org/projects/invoxia/badge/?version=latest
     :alt: ReadTheDocs
     :target: https://invoxia.readthedocs.io/en/stable/
+.. image:: https://img.shields.io/pypi/v/invoxia.svg
+    :alt: PyPI-Server
+    :target: https://pypi.org/project/invoxia/
 
 =======
 invoxia
