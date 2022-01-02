@@ -20,9 +20,9 @@
 .. image:: https://gitlab.com/ezlo.picori/invoxia/badges/main/coverage.svg
     :alt: Coverage
     :target: https://gitlab.com/ezlo.picori/invoxia/-/commits/main
- .. image:: https://invoxia.readthedocs.io/en/latest/?badge=latest
-     :alt: ReadTheDocs
-     :target: https://invoxia.readthedocs.io/en/stable/
+.. image:: https://readthedocs.org/projects/invoxia/badge/?version=latest
+    :alt: ReadTheDocs
+    :target: https://invoxia.readthedocs.io/en/stable/
 
 =======
 invoxia
