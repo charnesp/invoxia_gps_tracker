@@ -211,7 +211,7 @@ compile them using |tox|_::
 and use Python's built-in web server for a preview in your web browser
 (``http://localhost:8000``)::
 
-    python3 -m http.server --directory 'docs/_build/html'
+    python -m http.server --directory 'docs/_build/html'
 
 Maintainer tasks
 ================

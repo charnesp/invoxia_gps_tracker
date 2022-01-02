@@ -8,7 +8,7 @@ from __future__ import annotations
 import enum
 import uuid
 from datetime import datetime
-from typing import Any, Dict, List, Optional, Type
+from typing import Any, Dict, Iterable, List, Optional, Type
 
 import attrs
 
@@ -25,6 +25,13 @@ def _date_converter(val: Optional[str]) -> Optional[datetime]:
         # Error will be raised if value does not match format
         # This mainly happens if date does not contain UTC offset
         return datetime.strptime(f"{val}Z", "%Y-%m-%dT%H:%M:%S.%f%z")
+
+
+def _date_repr(val: Optional[datetime]) -> str:
+    """Print a datetime in a compact format."""
+    if val is None:
+        return str(val)
+    return val.isoformat()
 
 
 @attrs.define(auto_attribs=True)
@@ -50,7 +57,7 @@ class Device:
     id: int = attrs.field(converter=int)
     """Device unique identifier."""
 
-    created: datetime = attrs.field(converter=_date_converter)
+    created: datetime = attrs.field(converter=_date_converter, repr=_date_repr)
     """Datetime of device registration."""
 
     name: str = attrs.field(converter=str)
@@ -74,6 +81,11 @@ class Device:
             raise UnknownDeviceType(device_data)
 
         return Device._registry[device_data.pop("type")](**device_data)
+
+    @classmethod
+    def get_types(cls) -> Iterable[str]:
+        """Return list of registered device types."""
+        return cls._registry.keys()
 
 
 @attrs.define(slots=False)
@@ -217,7 +229,7 @@ class TrackerStatus:
     """Definition of tracker status data."""
 
     battery: int = attrs.field(converter=int)
-    begin_date: datetime = attrs.field(converter=_date_converter)
+    begin_date: datetime = attrs.field(converter=_date_converter, repr=_date_repr)
     network_operator: str = attrs.field(converter=str)
     state: str = attrs.field(converter=str)
     stationary: int = attrs.field(converter=int)
@@ -227,11 +239,13 @@ class TrackerStatus:
         converter=_date_converter,
         validator=attrs.validators.optional(attrs.validators.instance_of(datetime)),
         default=None,
+        repr=_date_repr,
     )
     last_location: Optional[datetime] = attrs.field(
         converter=_date_converter,
         validator=attrs.validators.optional(attrs.validators.instance_of(datetime)),
         default=None,
+        repr=_date_repr,
     )
 
 
@@ -260,7 +274,7 @@ class TrackerMethod(enum.Enum):
 class TrackerData:
     """Definition of tracker location data."""
 
-    datetime: datetime = attrs.field(converter=_date_converter)
+    datetime: datetime = attrs.field(converter=_date_converter, repr=_date_repr)
     """Datetime of location measurement."""
 
     lat: float = attrs.field(converter=float)
@@ -292,7 +306,7 @@ def _tracker_status_converter(val: Dict[str, Any]) -> TrackerStatus:
     return TrackerStatus(**val)
 
 
-class Tracker(Device):
+class Tracker(Device, dtype="tracker"):
     """Base class for trackers."""
 
 

@@ -2,6 +2,8 @@
 
 from typing import Optional
 
+from .datatypes import Device
+
 
 class UrlProvider:
     """URL provider generates the API urls used to access user data."""
@@ -48,14 +50,24 @@ class UrlProvider:
         """
         return self._form_url(f"users/{user_id}/")
 
-    def devices(self) -> str:
+    def devices(self, kind: Optional[str] = None) -> str:
         """
         Form the URL to access all devices associated with current credentials.
+
+        :param kind: Kind of device to list (tracker, android, iphone)
+        :type kind: str, optional
 
         :return: API URL
         :rtype: str
         """
-        return self._form_url("devices/")
+        arg = ""
+        if kind is not None:
+            if kind in Device.get_types():
+                arg = f"?type={kind}"
+            else:
+                raise KeyError(f"Device of kind '{kind}' are undefined.")
+
+        return self._form_url(f"devices/{arg}")
 
     def device(self, device_id: int) -> str:
         """

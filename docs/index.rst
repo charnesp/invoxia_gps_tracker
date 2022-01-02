@@ -9,13 +9,21 @@ Contents
 
 .. toctree::
    :maxdepth: 2
+   :caption: How to use invoxia
 
-   Overview <readme>
+   Introduction <readme>
+   Getting started <start>
+   Module Reference <api/modules>
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Contributing
+
    Contributions & Help <contributing>
    License <license>
    Authors <authors>
    Changelog <changelog>
-   Module Reference <api/modules>
+
 
 
 Indices and tables
