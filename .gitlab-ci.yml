@@ -42,11 +42,13 @@ package:
   rules:
     - if: $CI_COMMIT_TAG =~ /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$/
   script:
-    - pip install build
+    - pip install build twine
     - python -m build
     - mkdir assets
     - cd dist
     - 'for file in *; do curl --header "JOB-TOKEN: $CI_JOB_TOKEN" --upload-file $file "${PACKAGE_REGISTRY_URL}/$file"; touch ../assets/$file; done'
+    - cd ..
+    - twine upload dist/*
   artifacts:
     paths:
       - assets/

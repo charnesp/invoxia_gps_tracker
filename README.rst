@@ -1,9 +1,6 @@
 .. These are examples of badges you might want to add to your README:
    please update the URLs accordingly
 
-    .. image:: https://readthedocs.org/projects/invoxia/badge/?version=latest
-        :alt: ReadTheDocs
-        :target: https://invoxia.readthedocs.io/en/stable/
     .. image:: https://img.shields.io/pypi/v/invoxia.svg
         :alt: PyPI-Server
         :target: https://pypi.org/project/invoxia/
@@ -23,6 +20,9 @@
 .. image:: https://gitlab.com/ezlo.picori/invoxia/badges/main/coverage.svg
     :alt: Coverage
     :target: https://gitlab.com/ezlo.picori/invoxia/-/commits/main
+ .. image:: https://invoxia.readthedocs.io/en/latest/?badge=latest
+     :alt: ReadTheDocs
+     :target: https://invoxia.readthedocs.io/en/stable/
 
 =======
 invoxia
@@ -58,9 +58,3 @@ usage of their API to be in violation with their terms of use.
 .. _iOS: https://apps.apple.com/fr/app/invoxia-gps/id1261314542
 .. _`terms of use`: https://www.invoxia.com/fr/legal/site/terms
 .. _pro tracking offer: https://tracking.invoxia.com
-
-Note
-====
-
-This project has been set up using PyScaffold 4.1.1. For details and usage
-information on PyScaffold see https://pyscaffold.org/.

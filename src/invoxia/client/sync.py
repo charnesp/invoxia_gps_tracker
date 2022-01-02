@@ -16,7 +16,7 @@ if TYPE_CHECKING:
     from .config import Config
 
 
-class SyncClient:
+class Client:
     """Synchronous client for Invoxia API."""
 
     def __init__(self, config: Config):

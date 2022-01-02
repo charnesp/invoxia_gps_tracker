@@ -224,8 +224,8 @@ on PyPI_, the following steps can be used to release a new version for
 ``invoxia``:
 
 #. Make sure all unit tests are successful.
-#. Tag the current commit on the main branch with a release tag, e.g., ``v1.2.3``.
-#. Push the new tag to the upstream repository_, e.g., ``git push upstream v1.2.3``
+#. Tag the current commit on the main branch with a release tag, e.g., ``1.2.3``.
+#. Push the new tag to the upstream repository_, e.g., ``git push upstream 1.2.3``
 #. Clean up the ``dist`` and ``build`` folders with ``tox -e clean``
    (or ``rm -rf dist build``)
    to avoid confusion with old builds and Sphinx docs.
@@ -236,7 +236,16 @@ on PyPI_, the following steps can be used to release a new version for
 #. Run ``tox -e publish -- --repository pypi`` and check that everything was
    uploaded to PyPI_ correctly.
 
+PyScaffold
+----------
 
+This project has been set up using PyScaffold 4.1.1. For details and usage
+information on PyScaffold see https://pyscaffold.org/.
+
+When an new release of PyScaffold is available, update the scaffold of invoxia
+with::
+
+    putup --update
 
 .. [#contrib1] Even though, these resources focus on open source projects and
    communities, the general ideas behind collaborating with other developers
