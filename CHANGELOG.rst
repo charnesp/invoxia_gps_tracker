@@ -2,6 +2,21 @@
 Changelog
 =========
 
+0.1.3
+-----
+
+- Fix issues with unit-test execution
+
+0.1.2
+-----
+
+- Implement unit-tests for synchronous client
+
+0.1.1
+-----
+
+- Fix badges in README.rst
+
 0.1.0
 -----
 
