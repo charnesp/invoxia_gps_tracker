@@ -13,6 +13,7 @@ Contents
 
    Introduction <readme>
    Getting started <start>
+   Client API (sync/async) <client>
    Module Reference <api/modules>
 
 .. toctree::
