@@ -10,7 +10,7 @@ default:
 
 .test_script: &test_script
   script:
-    - python -v   # Print out Python version for debugging
+    - python -V   # Print out Python version for debugging
     - pip install -U pip setuptools
     - pip install -U tox
     - tox
