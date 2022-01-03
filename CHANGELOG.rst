@@ -2,6 +2,11 @@
 Changelog
 =========
 
+0.2.0
+-----
+
+- Implement Asynchronous client using aiohttp
+
 0.1.3
 -----
 
