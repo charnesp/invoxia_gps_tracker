@@ -26,6 +26,15 @@ class AsyncClient:
 
         self._session: Optional[aiohttp.ClientSession] = None
 
+    async def __aenter__(self):
+        """Enter context manager"""
+        await self._get_session()
+        return self
+
+    async def __aexit__(self, exc_type, exc_val, exc_tb):
+        """Exit context manager."""
+        await self.close()
+
     async def _get_session(self) -> aiohttp.ClientSession:
         """Open the session if needed and return it."""
         if self._session is None:
