@@ -11,7 +11,7 @@ from invoxia.client.exceptions import (
     UnauthorizedQuery,
     UnknownDeviceType,
 )
-from invoxia.client.sync import Client
+from invoxia.client.synchronous import Client
 
 
 def test_unknown_device_type():

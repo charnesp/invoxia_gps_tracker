@@ -1,6 +1,6 @@
 """invoxia sub-package imports and metadata definition."""
 
-from invoxia.client import Client, Config, Device, Tracker, TrackerData
+from invoxia.client import AsyncClient, Client, Config, Device, Tracker, TrackerData
 
 try:
     from invoxia._version import version as ver  # pylint: disable=E0401,E0611

@@ -7,11 +7,11 @@ import pytest
 
 from invoxia.client.config import Config
 from invoxia.client.datatypes import Device, User
-from invoxia.client.sync import Client
+from invoxia.client.synchronous import Client
 
 
 def test_client_init():
-    """Test instanciation of synchronous client."""
+    """Test instantiation of synchronous client."""
     cfg = Config("", "")
     print(cfg)
     Client(cfg)
@@ -61,3 +61,5 @@ def test_get_locations(config_authenticated):
     )
 
     assert len(locations) <= 21
+
+    client.get_locations(tracker)
