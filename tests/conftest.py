@@ -3,9 +3,9 @@
 import asyncio
 import os
 from distutils.version import LooseVersion
+from importlib.metadata import version
 
 import pytest
-from importlib_metadata import metadata
 
 from invoxia.client.asynchronous import AsyncClient
 from invoxia.client.config import Config
@@ -38,7 +38,7 @@ async def async_client(config_authenticated: Config):  # pylint: disable=W0621
     client = AsyncClient(config_authenticated)
     yield client
     await client.close()
-    if LooseVersion(metadata("aiohttp")["Version"]) < LooseVersion("4.0.0"):
+    if LooseVersion(version("aiohttp")) < LooseVersion("4.0.0"):
         # Up to version 4.0 of aiohttp, a client.close() does not
         # wait for the SSL transport to close.
         # This causes issues with pytest execution where the event_loop is closed
