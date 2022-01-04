@@ -2,6 +2,11 @@
 Changelog
 =========
 
+0.3.0
+-----
+
+- Rename package from ``invoxia`` to ``gps_tracker``
+
 0.2.0
 -----
 
