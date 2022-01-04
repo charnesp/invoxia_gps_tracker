@@ -46,3 +46,8 @@ class Config:  # pylint: disable=too-few-public-methods
         converter=_api_url_converter, default="https://labs.invoxia.io"
     )
     """Invoxia API URL."""
+
+    @classmethod
+    def default_api_url(cls) -> str:
+        """Return the default API URL."""
+        return attrs.fields(cls).api_url.default
