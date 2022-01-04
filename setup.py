@@ -1,4 +1,4 @@
-"""Setup file for invoxia."""
+"""Setup file for gps_tracker."""
 from setuptools import setup
 
 if __name__ == "__main__":

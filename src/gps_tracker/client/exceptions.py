@@ -6,7 +6,7 @@ import json
 from importlib import metadata
 from typing import Any, Dict, List, Optional, Type, Union
 
-_homepage: str = metadata.metadata("invoxia")["Home-page"]
+_homepage: str = metadata.metadata("gps_tracker")["Home-page"]
 
 
 class UnknownDeviceType(Exception):

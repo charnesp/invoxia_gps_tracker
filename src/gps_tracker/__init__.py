@@ -1,9 +1,9 @@
-"""invoxia sub-package imports and metadata definition."""
+"""gps_tracker sub-package imports and metadata definition."""
 
-from invoxia.client import AsyncClient, Client, Config, Device, Tracker, TrackerData
+from gps_tracker.client import AsyncClient, Client, Config, Device, Tracker, TrackerData
 
 try:
-    from invoxia._version import version as ver  # pylint: disable=E0401,E0611
+    from gps_tracker._version import version as ver  # pylint: disable=E0401,E0611
 
     __version__ = ver
     del ver

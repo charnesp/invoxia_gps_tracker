@@ -1,35 +1,28 @@
-.. These are examples of badges you might want to add to your README:
-   please update the URLs accordingly
-
-    .. image:: https://pepy.tech/badge/invoxia/month
-        :alt: Monthly Downloads
-        :target: https://pepy.tech/project/invoxia
-
 .. image:: https://img.shields.io/badge/-PyScaffold-005CA0?logo=pyscaffold
     :alt: Project generated with PyScaffold
     :target: https://pyscaffold.org/
-.. image:: https://gitlab.com/ezlo.picori/invoxia/badges/main/pipeline.svg
+.. image:: https://gitlab.com/ezlo.picori/gps_tracker/badges/main/pipeline.svg
     :alt: Pipeline status
-    :target: https://gitlab.com/ezlo.picori/invoxia/-/commits/main
-.. image:: https://gitlab.com/ezlo.picori/invoxia/badges/main/coverage.svg
+    :target: https://gitlab.com/ezlo.picori/gps_tracker/-/commits/main
+.. image:: https://gitlab.com/ezlo.picori/gps_tracker/badges/main/coverage.svg
     :alt: Coverage
-    :target: https://gitlab.com/ezlo.picori/invoxia/-/commits/main
-.. image:: https://readthedocs.org/projects/invoxia/badge/?version=latest
+    :target: https://gitlab.com/ezlo.picori/gps_tracker/-/commits/main
+.. image:: https://readthedocs.org/projects/gps_tracker/badge/?version=latest
     :alt: ReadTheDocs
-    :target: https://invoxia.readthedocs.io/en/stable/
-.. image:: https://img.shields.io/pypi/v/invoxia.svg
+    :target: https://gps_tracker.readthedocs.io/en/stable/
+.. image:: https://img.shields.io/pypi/v/gps_tracker.svg
     :alt: PyPI-Server
-    :target: https://pypi.org/project/invoxia/
+    :target: https://pypi.org/project/gps_tracker/
 
-=======
-invoxia
-=======
+===========
+gps_tracker
+===========
 
-    Non-official python package to access Invoxia GPS trackers data.
+    Unofficial client to retrieve location data from Invoxia™ GPS trackers.
 
-Invoxia_ is known for their GPS Trackers with long battery life which rely on the LoRa_ or SigFox_
+Invoxia_™ is known for their GPS Trackers with long battery life which rely on the LoRa_ or SigFox_
 networks. Unfortunately, trackers location can only be accessed through their Android_ and iOS_ applications.
-This ``invoxia`` package connects to the same API than your smartphone app and gives you an easy access to:
+This ``gps_tracker`` package connects to the same API than your smartphone app and gives you an easy access to:
 
 - The list of devices connected to your account
 - Their current state
@@ -37,12 +30,12 @@ This ``invoxia`` package connects to the same API than your smartphone app and g
 
 Data is only in read-access, you will still need the smartphone app to change your devices configuration.
 
-Note that even though direct access to Invoxia API is not strictly prohibited in their `terms of use`_, it is
+Note that even though direct access to Invoxia™ API is not strictly prohibited in their `terms of use`_, it is
 not encouraged either: company representatives have already stated that they do not currently consider making the
 API opened for all customers and this feature is limited to their `pro tracking offer`_.
-Therefore, by using ``invoxia`` you:
+Therefore, by using ``gps_tracker`` you:
 
-1. Accept to use this direct API access in a reasonnable manner by limiting the query rate to the bare minimum required
+1. Accept to use this direct API access in a reasonable manner by limiting the query rate to the bare minimum required
 for your application.
 
 2. Understand that the Invoxia company may take any action they see fit regarding your account if they consider your

@@ -6,15 +6,15 @@ Client API (Sync/Async)
 Usage example
 -------------
 
-`invoxia` provides both a :class:`Synchronous Client <invoxia.client.synchronous.Client>` and
-an :class:`Asynchronous Client <invoxia.client.asynchronous.AsyncClient>` both implementing
+``gps_tracker`` provides both a :class:`Synchronous Client <gps_tracker.client.synchronous.Client>` and
+an :class:`Asynchronous Client <gps_tracker.client.asynchronous.AsyncClient>` both implementing
 the same methods.
 
 The use of each client is illustrated in the following example:
 
 .. code-block:: python
 
-    from invoxia import AsyncClient, Client, Config
+    from gps_tracker import AsyncClient, Client, Config
 
     def main(config):
         """Use of synchronous client."""
@@ -61,7 +61,7 @@ As illustrated previously, asynchronous clients must be closed either by:
     async with AsyncClient(config) as client:
         ...  # Use client to retrieve data
 
-- By explicitly calling the :meth:`close() <invoxia.client.asynchronous.AsyncClient.close>` method:
+- By explicitly calling the :meth:`close() <gps_tracker.client.asynchronous.AsyncClient.close>` method:
 
 .. code-block:: python
 
@@ -78,26 +78,26 @@ Client methods
 Retrieve user details
 ~~~~~~~~~~~~~~~~~~~~~
 
-Invoxia API seems to allow multiple users to be associated to a given account.
+Invoxia™ API seems to allow multiple users to be associated to a given account.
 All these users can be retrieved by:
 
 .. code-block:: python
 
     users: List[User] = client.get_users()
 
-Where :class:`User <invoxia.client.datatypes.User>` contains
+Where :class:`User <gps_tracker.client.datatypes.User>` contains
 
-- the user :attr:`id <invoxia.client.datatypes.User.id>`,
-- its :attr:`username <invoxia.client.datatypes.User.username>`
-- The list of :attr:`profile ids <invoxia.client.datatypes.User.profiles>` associated to user
+- the user :attr:`id <gps_tracker.client.datatypes.User.id>`,
+- its :attr:`username <gps_tracker.client.datatypes.User.username>`
+- The list of :attr:`profile ids <gps_tracker.client.datatypes.User.profiles>` associated to user
 
-The notion of profiles seems to be useful only for pro users of Invoxia devices and services.
+The notion of profiles seems to be useful only for pro users of Invoxia™ devices and services.
 Devices can be associated to theses profiles but for general consumers, only a single profile
 is associated to your account, thus making profiles irrelevant.
-similarly, you will only have a single :class:`User <invoxia.client.datatypes.User>` associated
+similarly, you will only have a single :class:`User <gps_tracker.client.datatypes.User>` associated
 to your credentials.
 
-A single :class:`User <invoxia.client.datatypes.User>` can also be retrieve if its ``id``
+A single :class:`User <gps_tracker.client.datatypes.User>` can also be retrieve if its ``id``
 is known:
 
 .. code-block:: python
@@ -107,32 +107,32 @@ is known:
 Retrieve devices
 ~~~~~~~~~~~~~~~~
 
-Invoxia API lets you access the list of devices associated to your account.
+Invoxia™ API lets you access the list of devices associated to your account.
 These contain not only your trackers, but also the smartphones you installed
-the Invoxia app on.
+the Invoxia™ app on.
 To get the list of all your devices, user
 
 .. code-block:: python
 
     devices: List[Device] = client.get_devices()
 
-Each :class:`Device <invoxia.client.datatypes.Device>` defines its
+Each :class:`Device <gps_tracker.client.datatypes.Device>` defines its
 
-- :attr:`id <invoxia.client.datatypes.Device.id>`
-- :attr:`name <invoxia.client.datatypes.Device.name>`
-- :attr:`created <invoxia.client.datatypes.Device.created>`: date-time when the
+- :attr:`id <gps_tracker.client.datatypes.Device.id>`
+- :attr:`name <gps_tracker.client.datatypes.Device.name>`
+- :attr:`created <gps_tracker.client.datatypes.Device.created>`: date-time when the
   device was added to your account
-- :attr:`timezone <invoxia.client.datatypes.Device.timezone>`: timezone associated to
+- :attr:`timezone <gps_tracker.client.datatypes.Device.timezone>`: timezone associated to
   your device
-- :attr:`version <invoxia.client.datatypes.Device.version>`: version of the
+- :attr:`version <gps_tracker.client.datatypes.Device.version>`: version of the
   smartphone app or of the tracker firmware
 - ``serial``: serial number of the device
 
-Moreover, :class:`Device <invoxia.client.datatypes.Device>` which are also
-:class:`Tracker <invoxia.client.datatypes.Tracker>` instances will have following attributes:
+Moreover, :class:`Device <gps_tracker.client.datatypes.Device>` which are also
+:class:`Tracker <gps_tracker.client.datatypes.Tracker>` instances will have following attributes:
 
-* :attr:`tracker_config <invoxia.client.datatypes.Tracker01.tracker_config>`: Device configuration
-* :attr:`tracker_status <invoxia.client.datatypes.TrackerConfig.tracker_status>`: Current device status
+* :attr:`tracker_config <gps_tracker.client.datatypes.Tracker01.tracker_config>`: Device configuration
+* :attr:`tracker_status <gps_tracker.client.datatypes.TrackerConfig.tracker_status>`: Current device status
 
 You may retrieve only trackers with
 
@@ -143,7 +143,7 @@ You may retrieve only trackers with
 Get tracker location
 ~~~~~~~~~~~~~~~~~~~~
 
-Once you obtain a :class:`Tracker <invoxia.client.datatypes.Tracker>` instance,
+Once you obtain a :class:`Tracker <gps_tracker.client.datatypes.Tracker>` instance,
 you may query its locations with
 
 .. code-block:: python

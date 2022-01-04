@@ -5,9 +5,9 @@ from typing import List
 
 import pytest
 
-from invoxia.client.config import Config
-from invoxia.client.datatypes import Device, User
-from invoxia.client.synchronous import Client
+from gps_tracker.client.config import Config
+from gps_tracker.client.datatypes import Device, User
+from gps_tracker.client.synchronous import Client
 
 
 def test_client_init():

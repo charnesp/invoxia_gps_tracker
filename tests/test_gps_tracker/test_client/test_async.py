@@ -5,8 +5,8 @@ from typing import List
 
 import pytest
 
-from invoxia.client.asynchronous import AsyncClient
-from invoxia.client.datatypes import Device, Tracker, User
+from gps_tracker.client.asynchronous import AsyncClient
+from gps_tracker.client.datatypes import Device, Tracker, User
 
 
 @pytest.mark.asyncio

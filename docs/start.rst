@@ -3,30 +3,30 @@
 Getting Started
 ===============
 
-Installing invoxia
-******************
+Installing gps_tracker
+**********************
 
-:code:`invoxia` requires Python 3.9 or later to run. Once you have
-set-up your Python environment, simply install :code:`invoxia` using :code:`pip`:
+``gps_tracker`` requires Python 3.9 or later to run. Once you have
+set-up your Python environment, simply install ``gps_tracker`` using :code:`pip`:
 
 .. code-block:: shell
 
-    $ pip install invoxia
+    $ pip install gps_tracker
 
 
 Configure a client
 ******************
 
-The invoxia client only needs your credentials to work.
-You may pass them as following:
+The ``gps_tracker`` client only needs the credentials to your Invoxia™
+account to work. You may pass them as following:
 
 .. code-block:: python
 
-    import invoxia
+    import gps_tracker
 
-    cfg = invoxia.Config(username="myusername",
-                         password="mypassword")
-    client = invoxia.Client(cfg)
+    cfg = gps_tracker.Config(username="myusername",
+                             password="mypassword")
+    client = gps_tracker.Client(cfg)
 
 
 
@@ -37,20 +37,20 @@ Once the client is configured, accessing your devices is straightforward:
 
 .. code-block:: python
 
-    devices: List[invoxia.Device] = client.get_devices()
+    devices: List[gps_tracker.Device] = client.get_devices()
 
 Note that, by default, all devices associated to your account are returned.
-This includes the smartphones (Android or iOS) that were connected through the Invoxia App.
+This includes the smartphones (Android or iOS) that were connected through the Invoxia™ app.
 
 To only retrieve trackers, you may filter the query:
 
 .. code-block:: python
 
-    trackers: List[invoxia.Tracker] = client.get_devices(kind='tracker')
+    trackers: List[gps_tracker.Tracker] = client.get_devices(kind='tracker')
 
 See the :doc:`Module Reference <api/modules>` for details regarding attributes
-of :class:`Android <invoxia.client.datatypes.Android>`, :class:`iPhone <invoxia.client.datatypes.Iphone>`
-and :class:`Tracker <invoxia.client.datatypes.Tracker01>` devices.
+of :class:`Android <gps_tracker.client.datatypes.Android>`, :class:`iPhone <gps_tracker.client.datatypes.Iphone>`
+and :class:`Tracker <gps_tracker.client.datatypes.Tracker01>` devices.
 
 Once you have an instance of the tracker device you are interested in, you may
 query its locations with:
@@ -58,14 +58,14 @@ query its locations with:
 .. code-block:: python
 
     for tracker in trackers:
-        locations: List[invoxia.TrackerData] = client.get_locations(tracker)
+        locations: List[gps_tracker.TrackerData] = client.get_locations(tracker)
 
 
-The :meth:`get_locations <invoxia.client.sync.SyncClient.get_locations>` method lets you
+The :meth:`get_locations <gps_tracker.client.sync.SyncClient.get_locations>` method lets you
 define a max count of tracking point to extract and a time period. See its documentation
 for more details.
 
-Each :class:`location <invoxia.client.datatypes.TrackerData>` contains:
+Each :class:`location <gps_tracker.client.datatypes.TrackerData>` contains:
 
 - its date and time;
 - its latitude and longitude;

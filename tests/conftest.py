@@ -1,4 +1,4 @@
-"""conftest.py for invoxia."""
+"""conftest.py for gps_tracker."""
 
 import asyncio
 import os
@@ -7,8 +7,8 @@ from importlib.metadata import version
 
 import pytest
 
-from invoxia.client.asynchronous import AsyncClient
-from invoxia.client.config import Config
+from gps_tracker.client.asynchronous import AsyncClient
+from gps_tracker.client.config import Config
 
 
 @pytest.fixture(scope="module")

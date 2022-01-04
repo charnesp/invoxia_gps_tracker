@@ -4,14 +4,14 @@ import uuid
 
 import pytest
 
-from invoxia.client.config import Config
-from invoxia.client.datatypes import Device
-from invoxia.client.exceptions import (
+from gps_tracker.client.config import Config
+from gps_tracker.client.datatypes import Device
+from gps_tracker.client.exceptions import (
     ForbiddenQuery,
     UnauthorizedQuery,
     UnknownDeviceType,
 )
-from invoxia.client.synchronous import Client
+from gps_tracker.client.synchronous import Client
 
 
 def test_unknown_device_type():

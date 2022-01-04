@@ -2,7 +2,7 @@
 Contributing
 ============
 
-Welcome to ``invoxia`` contributor's guide.
+Welcome to ``gps_tracker`` contributor's guide.
 
 This document focuses on getting any potential contributor familiarized
 with the development processes, but `other kinds of contributions`_ are also
@@ -20,7 +20,7 @@ guidelines.
 Code Contributions
 ==================
 
-``invoxia`` enforces strict PEP8_ (coding-style) ans PEP257_ (Docstring-convention) compliance through
+``gps_tracker`` enforces strict PEP8_ (coding-style) ans PEP257_ (Docstring-convention) compliance through
 the use of flake8_ and black_ linters. The code must be fully typed which is checked using mypy_.
 
 Though formatting is checked before integration, we strongly encourage the use of `pre-commit`_ to
@@ -46,8 +46,8 @@ This can easily be done via either |virtualenv|_::
 
 or Miniconda_::
 
-    conda create -n invoxia python=3 six virtualenv pytest pytest-cov
-    conda activate invoxia
+    conda create -n gps_tracker python=3 six virtualenv pytest pytest-cov
+    conda activate gps_tracker
 
 Clone the repository
 --------------------
@@ -57,20 +57,20 @@ Clone the repository
    page. This creates a copy of the code under your account on |the repository service|.
 #. Clone this copy to your local disk::
 
-    git clone git@gitlab.com:YourLogin/invoxia.git
-    cd invoxia
+    git clone git@gitlab.com:YourLogin/gps_tracker.git
+    cd gps_tracker
 
 #. You should run::
 
     pip install -U -e .[dev]
 
-   to install ``invoxia`` in editable mode in your local python environment, as well as dev dependencies.
+   to install ``gps_tracker`` in editable mode in your local python environment, as well as dev dependencies.
 
 #. Enable |pre-commit|_::
 
     pre-commit install
 
-   ``invoxia`` comes with a lot of hooks (flake8_, black_, mypy_, ...) configured to automatically
+   ``gps_tracker`` comes with a lot of hooks (flake8_, black_, mypy_, ...) configured to automatically
    help the developer to statically check the code being written.
 
 Implement your changes
@@ -177,7 +177,7 @@ package:
 Issue Reports
 =============
 
-If you experience bugs or general issues with ``invoxia``, please have a look
+If you experience bugs or general issues with ``gps_tracker``, please have a look
 on the `issue tracker`_. If you don't see anything useful there, please feel
 free to fire an issue report.
 
@@ -196,10 +196,10 @@ you help us to identify the root cause of the issue.
 Documentation Improvements
 ==========================
 
-You can help improve ``invoxia`` docs by making them more readable and coherent, or
+You can help improve ``gps_tracker`` docs by making them more readable and coherent, or
 by adding missing information and correcting mistakes.
 
-``invoxia`` documentation uses Sphinx_ as its main documentation compiler.
+``gps_tracker`` documentation uses Sphinx_ as its main documentation compiler.
 This means that the docs are kept in the same repository as the project code, and
 that any documentation update is done in the same way was a code contribution.
 
@@ -221,7 +221,7 @@ Releases
 
 If you are part of the group of maintainers and have correct user permissions
 on PyPI_, the following steps can be used to release a new version for
-``invoxia``:
+``gps_tracker``:
 
 #. Make sure all unit tests are successful.
 #. Tag the current commit on the main branch with a release tag, e.g., ``1.2.3``.
@@ -242,7 +242,7 @@ PyScaffold
 This project has been set up using PyScaffold 4.1.1. For details and usage
 information on PyScaffold see https://pyscaffold.org/.
 
-When an new release of PyScaffold is available, update the scaffold of invoxia
+When an new release of PyScaffold is available, update the scaffold of gps_tracker
 with::
 
     putup --update
@@ -256,8 +256,8 @@ with::
 .. |the repository service| replace:: GitLab
 .. |contribute button| replace:: "New merge request"
 
-.. _repository: https://gitlab.com/ezlo.picori/invoxia
-.. _issue tracker: https://gitlab.com/ezlo.picori/invoxia/-/issues
+.. _repository: https://gitlab.com/ezlo.picori/gps_tracker
+.. _issue tracker: https://gitlab.com/ezlo.picori/gps_tracker/-/issues
 
 
 .. |virtualenv| replace:: ``virtualenv``

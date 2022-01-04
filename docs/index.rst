@@ -1,15 +1,16 @@
-=======
-invoxia
-=======
+===========
+gps_tracker
+===========
 
-This is the documentation of **invoxia**.
+This is the documentation of **gps_tracker**: an unofficial client
+to access data from your Invoxia™ GPS tracker.
 
 Contents
 ========
 
 .. toctree::
    :maxdepth: 2
-   :caption: How to use invoxia
+   :caption: How to use gps_tracker
 
    Introduction <readme>
    Getting started <start>
