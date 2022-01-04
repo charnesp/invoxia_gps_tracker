@@ -26,7 +26,7 @@ The use of each client is illustrated in the following example:
     async def async_main(config):
         """Use of asynchronous client."""
 
-        with AsyncClient(config) as client:
+        async with AsyncClient(config) as client:
             users = await client.get_users()
 
         return users
