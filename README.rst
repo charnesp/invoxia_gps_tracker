@@ -20,7 +20,7 @@ gps_tracker
 
     Unofficial client to retrieve location data from Invoxia™ GPS trackers.
 
-Invoxia_™ is known for their GPS Trackers with long battery life which rely on the LoRa_ or SigFox_
+Invoxia_\™ is known for their GPS Trackers with long battery life which rely on the LoRa_ or SigFox_
 networks. Unfortunately, trackers location can only be accessed through their Android_ and iOS_ applications.
 This ``gps_tracker`` package connects to the same API than your smartphone app and gives you an easy access to:
 
