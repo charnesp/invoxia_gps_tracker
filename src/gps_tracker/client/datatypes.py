@@ -261,6 +261,12 @@ class TrackerStatus:
         default=None,
         repr=_date_repr,
     )
+    lost_pending: Optional[bool] = attrs.field(
+        converter=attrs.converters.optional(bool),
+        validator=attrs.validators.optional(attrs.validators.instance_of(bool)),
+        default=False,
+    )
+    """To be determined. Probably whether device is considered as probably lost."""
 
 
 class TrackerMethod(enum.Enum):
