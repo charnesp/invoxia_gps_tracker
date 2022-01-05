@@ -10,7 +10,7 @@ import uuid
 from datetime import datetime
 from typing import Any, Dict, Iterable, List, Optional, Type
 
-from .exceptions import UnknownDeviceType
+from .exceptions import UnknownAnswerScheme, UnknownDeviceType
 
 try:
     import attrs
@@ -84,7 +84,10 @@ class Device:
         if device_data["type"] not in Device._registry:
             raise UnknownDeviceType(device_data)
 
-        return Device._registry[device_data.pop("type")](**device_data)
+        try:
+            return Device._registry[device_data.pop("type")](**device_data)
+        except TypeError as err:
+            raise UnknownAnswerScheme(device_data, err.args[0]) from err
 
     @classmethod
     def get_types(cls) -> Iterable[str]:
@@ -309,12 +312,18 @@ class TrackerData:
 
 def _tracker_config_converter(val: Dict[str, Any]) -> TrackerConfig:
     """Converter to form a TrackerConfig from its JSON representation."""
-    return TrackerConfig(**val)
+    try:
+        return TrackerConfig(**val)
+    except TypeError as err:
+        raise UnknownAnswerScheme(val, err.args[0]) from err
 
 
 def _tracker_status_converter(val: Dict[str, Any]) -> TrackerStatus:
     """Converter to form a TrackerStatus from its JSON representation."""
-    return TrackerStatus(**val)
+    try:
+        return TrackerStatus(**val)
+    except TypeError as err:
+        raise UnknownAnswerScheme(val, err.args[0]) from err
 
 
 class Tracker(Device, dtype="tracker"):

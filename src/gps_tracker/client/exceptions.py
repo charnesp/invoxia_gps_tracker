@@ -24,6 +24,23 @@ Obfuscate any sensitive data by replacing letters by 'a' and digits by '0' if ne
         )
 
 
+class UnknownAnswerScheme(Exception):
+    """Exception raised when API answer cannot be interpreted."""
+
+    def __init__(self, json_data, message):
+        """Store json and error message"""
+        self.json_data = json_data
+        self.message = message
+        super().__init__(
+            f"""
+It appears that one of your devices has fields which are not currently recognized.
+Please open an issue at {_homepage} with the following content:
+{json.dumps(json_data, indent=4)}
+{message}
+Obfuscate any sensitive data by replacing letters by 'a' and digits by '0' if needed."""
+        )
+
+
 class HttpException(Exception):
     """Base class for HTTP exceptions."""
 

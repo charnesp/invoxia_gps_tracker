@@ -9,7 +9,7 @@ from typing import TYPE_CHECKING, Any, List, Optional
 import aiohttp
 
 from .datatypes import Device, Tracker, TrackerConfig, TrackerData, TrackerStatus, User
-from .exceptions import HttpException
+from .exceptions import HttpException, UnknownAnswerScheme
 from .url_provider import UrlProvider
 
 if TYPE_CHECKING:
@@ -90,7 +90,10 @@ class AsyncClient:
             during API call
         """
         data = await self._query(self._url_provider.user(user_id))
-        return User(**data)
+        try:
+            return User(**data)
+        except TypeError as err:
+            raise UnknownAnswerScheme(data, err.args[0]) from err
 
     async def get_users(self) -> List[User]:
         """
@@ -108,7 +111,13 @@ class AsyncClient:
             during API call
         """
         data = await self._query(self._url_provider.users())
-        return [User(**item) for item in data]
+        users: List[User] = []
+        for item in data:
+            try:
+                users.append(User(**item))
+            except TypeError as err:
+                raise UnknownAnswerScheme(item, err.args[0]) from err
+        return users
 
     async def get_device(self, device_id: int) -> Device:
         """
@@ -227,7 +236,11 @@ class AsyncClient:
 
             # Pop returned results one by one and stop if max_count is reached.
             while len(data) > 0:
-                res.append(TrackerData(**data.pop(0)))
+                tracker_data = data.pop(0)
+                try:
+                    res.append(TrackerData(**tracker_data))
+                except TypeError as err:
+                    raise UnknownAnswerScheme(tracker_data, err.args[0]) from err
                 max_count -= 1
                 if max_count <= 0:
                     break
@@ -248,7 +261,10 @@ class AsyncClient:
         :rtype: TrackerStatus
         """
         data = await self._query(self._url_provider.tracker_status(device_id=device.id))
-        return TrackerStatus(**data)
+        try:
+            return TrackerStatus(**data)
+        except TypeError as err:
+            raise UnknownAnswerScheme(data, err.args[0]) from err
 
     async def get_tracker_config(self, device: Tracker) -> TrackerConfig:
         """
@@ -261,4 +277,7 @@ class AsyncClient:
         :rtype: TrackerConfig
         """
         data = await self._query(self._url_provider.tracker_config(device_id=device.id))
-        return TrackerConfig(**data)
+        try:
+            return TrackerConfig(**data)
+        except TypeError as err:
+            raise UnknownAnswerScheme(data, err.args[0]) from err
