@@ -4,7 +4,11 @@ from __future__ import annotations
 
 import urllib.parse
 
-import attrs
+try:
+    import attrs
+except ModuleNotFoundError:
+    # Handle attrs<21.3.0
+    import attr as attrs  # type: ignore[no-redef]
 
 
 def _api_url_converter(val: str) -> str:

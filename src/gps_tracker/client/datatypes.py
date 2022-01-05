@@ -10,9 +10,13 @@ import uuid
 from datetime import datetime
 from typing import Any, Dict, Iterable, List, Optional, Type
 
-import attrs
-
 from .exceptions import UnknownDeviceType
+
+try:
+    import attrs
+except ModuleNotFoundError:
+    # Handle attrs<21.3.0
+    import attr as attrs  # type: ignore[no-redef]
 
 
 def _date_converter(val: Optional[str]) -> Optional[datetime]:
