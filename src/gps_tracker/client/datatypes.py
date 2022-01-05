@@ -336,3 +336,9 @@ class Tracker01(Tracker, dtype="tracker_01"):
 
     tracker_status: TrackerStatus = attrs.field(converter=_tracker_status_converter)
     """Tracker current status."""
+
+    model: Optional[str] = attrs.field(
+        validator=attrs.validators.optional(attrs.validators.instance_of(str)),
+        default=None,
+    )
+    """Tracker model."""
