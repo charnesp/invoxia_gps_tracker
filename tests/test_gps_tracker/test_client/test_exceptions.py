@@ -8,6 +8,8 @@ from gps_tracker.client.config import Config
 from gps_tracker.client.datatypes import Device
 from gps_tracker.client.exceptions import (
     ForbiddenQuery,
+    HttpException,
+    NoContentQuery,
     UnauthorizedQuery,
     UnknownDeviceType,
 )
@@ -75,10 +77,44 @@ def test_unauthorized_query():
         client.get_users()
 
 
-def test_forbidden_query(config_authenticated: Config):
+def test_forbidden_query(sync_client: Client):
     """Check exception raised with forbidden query."""
 
-    client = Client(config_authenticated)
-
     with pytest.raises(ForbiddenQuery):
-        client.get_user(1)
+        sync_client.get_user(1)
+
+
+def test_empty_query(sync_client: Client):
+    """Test exception raised with no-content query."""
+
+    android_devices = sync_client.get_devices(kind="android")
+    with pytest.raises(NoContentQuery):
+        # Instruct mypy to ignore arg-type discrepancy as the
+        # type enforcement is here to prevent NoContentQuery
+        # from being raised.
+        sync_client.get_tracker_status(android_devices[0])  # type: ignore[arg-type]
+
+
+def test_subclass():
+    """Test subclassing HttpException without given code."""
+
+    class TestHttpException(HttpException):  # pylint: disable=W0612
+        """Dummy class."""
+
+
+def test_double_subclass():
+    """Test subclassing HttpException twice with the same code."""
+
+    with pytest.raises(Exception):
+
+        class UnauthorizedQueryBis(  # pylint: disable=W0612
+            HttpException,
+            code=401,
+        ):
+            """Dummy class."""
+
+
+def test_instantiate_without_msg():
+    """Test exception instantiation wi no message."""
+
+    UnauthorizedQuery()

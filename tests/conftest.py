@@ -9,6 +9,7 @@ import pytest
 
 from gps_tracker.client.asynchronous import AsyncClient
 from gps_tracker.client.config import Config
+from gps_tracker.client.synchronous import Client
 
 
 @pytest.fixture(scope="module")
@@ -45,3 +46,9 @@ async def async_client(config_authenticated: Config):  # pylint: disable=W0621
         # between client.close() and the actual connection termination.
         # See https://github.com/aio-libs/aiohttp/issues/1925
         await asyncio.sleep(0.25)
+
+
+@pytest.fixture(scope="module", name="sync_client")
+def sync_client(config_authenticated: Config):  # pylint: disable=W0621
+    """Instantiate a synchronous client."""
+    return Client(config_authenticated)

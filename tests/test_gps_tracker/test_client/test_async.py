@@ -10,6 +10,13 @@ from gps_tracker.client.datatypes import Device, User
 
 
 @pytest.mark.asyncio
+async def test_async_context(config_authenticated):
+    """Test async client with context manager."""
+    async with AsyncClient(config_authenticated):
+        pass
+
+
+@pytest.mark.asyncio
 async def test_get_users(async_client: AsyncClient):
     """Test user getters."""
 

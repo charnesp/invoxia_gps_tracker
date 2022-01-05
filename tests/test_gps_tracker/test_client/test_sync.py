@@ -13,47 +13,42 @@ from gps_tracker.client.synchronous import Client
 def test_client_init():
     """Test instantiation of synchronous client."""
     cfg = Config("", "")
+    Config.default_api_url()
     print(cfg)
     Client(cfg)
 
 
-def test_get_users(config_authenticated: Config):
+def test_get_users(sync_client: Client):
     """Test user getters."""
 
-    client = Client(config_authenticated)
-
-    users: List[User] = client.get_users()
+    users: List[User] = sync_client.get_users()
 
     for user in users:
-        client.get_user(user.id)
+        sync_client.get_user(user.id)
 
 
-def test_get_devices(config_authenticated):
+def test_get_devices(sync_client: Client):
     """Test devices getters."""
 
-    client = Client(config_authenticated)
-
-    devices: List[Device] = client.get_devices()
+    devices: List[Device] = sync_client.get_devices()
 
     for device in devices:
-        client.get_device(device.id)
+        sync_client.get_device(device.id)
 
     for kind in Device.get_types():
-        client.get_devices(kind=kind)
+        sync_client.get_devices(kind=kind)
 
     with pytest.raises(KeyError):
-        client.get_devices(kind="undefined_kind")
+        sync_client.get_devices(kind="undefined_kind")
 
 
-def test_get_tracker_data(config_authenticated):
+def test_get_tracker_data(sync_client: Client):
     """Test getting tracker locations."""
 
-    client = Client(config_authenticated)
-
-    trackers = client.get_trackers()
+    trackers = sync_client.get_trackers()
     tracker = trackers[0]
 
-    locations = client.get_locations(
+    locations = sync_client.get_locations(
         tracker,
         not_before=datetime(2004, 11, 4),
         not_after=datetime(2017, 3, 3),
@@ -61,7 +56,8 @@ def test_get_tracker_data(config_authenticated):
     )
     assert len(locations) <= 21
 
-    client.get_tracker_config(tracker)
-    client.get_tracker_status(tracker)
+    sync_client.get_tracker_config(tracker)
+    sync_client.get_tracker_status(tracker)
 
-    client.get_locations(tracker)
+    locations = sync_client.get_locations(tracker)
+    print(locations[0])

@@ -65,8 +65,7 @@ class HttpException(Exception):
 
         if msg is None:
             msg = self.message()  # pylint: disable=assignment-from-none
-        if msg is not None:
-            super().__init__(msg)
+        super().__init__(msg)
 
 
 class UnauthorizedQuery(HttpException, code=401):
