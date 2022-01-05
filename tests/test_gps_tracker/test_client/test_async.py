@@ -6,7 +6,7 @@ from typing import List
 import pytest
 
 from gps_tracker.client.asynchronous import AsyncClient
-from gps_tracker.client.datatypes import Device, Tracker, User
+from gps_tracker.client.datatypes import Device, User
 
 
 @pytest.mark.asyncio
@@ -36,21 +36,22 @@ async def test_get_devices(async_client: AsyncClient):
 
 
 @pytest.mark.asyncio
-async def test_get_locations(async_client: AsyncClient):
+async def test_get_tracker_data(async_client: AsyncClient):
     """Test getting tracker locations."""
 
-    trackers = await async_client.get_devices(kind="tracker")
+    trackers = await async_client.get_trackers()
     tracker = trackers[0]
 
-    if isinstance(tracker, Tracker):
-        locations, _ = await asyncio.gather(
-            async_client.get_locations(
-                tracker,
-                not_before=datetime(2004, 11, 4),
-                not_after=datetime(2017, 3, 3),
-                max_count=21,
-            ),
-            async_client.get_locations(tracker),
-        )
+    results = await asyncio.gather(
+        async_client.get_locations(
+            tracker,
+            not_before=datetime(2004, 11, 4),
+            not_after=datetime(2017, 3, 3),
+            max_count=21,
+        ),
+        async_client.get_locations(tracker),
+        async_client.get_tracker_config(tracker),
+        async_client.get_tracker_status(tracker),
+    )
 
-        assert len(locations) <= 21
+    assert len(results[0]) <= 21

@@ -45,12 +45,12 @@ def test_get_devices(config_authenticated):
         client.get_devices(kind="undefined_kind")
 
 
-def test_get_locations(config_authenticated):
+def test_get_tracker_data(config_authenticated):
     """Test getting tracker locations."""
 
     client = Client(config_authenticated)
 
-    trackers = client.get_devices(kind="tracker")
+    trackers = client.get_trackers()
     tracker = trackers[0]
 
     locations = client.get_locations(
@@ -59,7 +59,9 @@ def test_get_locations(config_authenticated):
         not_after=datetime(2017, 3, 3),
         max_count=21,
     )
-
     assert len(locations) <= 21
+
+    client.get_tracker_config(tracker)
+    client.get_tracker_status(tracker)
 
     client.get_locations(tracker)
