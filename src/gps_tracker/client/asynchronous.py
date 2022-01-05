@@ -1,4 +1,5 @@
 """Asynchronous client for Invoxia API."""
+# pylint: disable=R0801  # Code duplicated with sync client
 
 from __future__ import annotations
 
@@ -150,6 +151,24 @@ class AsyncClient:
         """
         data = await self._query(self._url_provider.devices(kind=kind))
         return [Device.get(item) for item in data]
+
+    async def get_trackers(self) -> List[Tracker]:
+        """
+        Query API for the list of trackers associated to credentials.
+
+        :return: Tracker devices associated to current account
+        :rtype: List[Tracker]
+
+        :raise UnauthorizedQuery: Credentials are invalid
+        :raise requests.HTTPError: Unexpected HTTP error during API call
+        """
+        data = await self._query(self._url_provider.devices(kind="tracker"))
+        trackers: List[Tracker] = []
+        for item in data:
+            device = Device.get(item)
+            if isinstance(device, Tracker):
+                trackers.append(device)
+        return trackers
 
     async def get_locations(
         self,
