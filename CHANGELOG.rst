@@ -2,6 +2,11 @@
 Changelog
 =========
 
+0.5.0
+-----
+
+- Improve handling of unexpected data in API answers
+
 0.4.0
 -----
 - Fix attrs import when attrs<2021.3.0 is installed (required
