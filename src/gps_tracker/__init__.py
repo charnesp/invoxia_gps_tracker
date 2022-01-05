@@ -1,5 +1,6 @@
 """gps_tracker sub-package imports and metadata definition."""
 
+from gps_tracker import client
 from gps_tracker.client import AsyncClient, Client, Config, Device, Tracker, TrackerData
 
 try:
