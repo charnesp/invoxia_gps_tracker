@@ -90,3 +90,11 @@ class ForbiddenQuery(HttpException, code=403):
     def message(self) -> Optional[str]:
         """Define message for forbidden queries."""
         return "You are not allowed to perform the attempted query."
+
+
+class NoContentQuery(HttpException, code=204):
+    """Exception raised when API has no content to return."""
+
+    def message(self) -> Optional[str]:
+        """Define message for no-content queries."""
+        return "No content is associated to this query."
