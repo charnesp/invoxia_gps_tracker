@@ -26,11 +26,16 @@ class Client:
 
         self._url_provider = UrlProvider(api_url=config.api_url)
 
+        self._session = requests.Session()
+        self._session.auth = requests.auth.HTTPBasicAuth(
+            username=config.username, password=config.password
+        )
+
     def _query(self, url: str) -> Any:
         """Query the API synchronously and return the decoded JSON response."""
 
         # Run the request
-        request = requests.get(url=url, auth=(self._cfg.username, self._cfg.password))
+        request = self._session.get(url=url)
 
         # Extract JSON answer if possible
         json_answer = None
