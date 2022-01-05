@@ -227,6 +227,13 @@ class TrackerConfig:
     )
     """Image reference when icon as been replaced by a user-defined image."""
 
+    weight: Optional[float] = attrs.field(
+        converter=attrs.converters.optional(float),
+        validator=attrs.validators.optional(attrs.validators.instance_of(float)),
+        default=None,
+    )
+    """To be determined. Probably weight of object to which tracker is attached."""
+
 
 @attrs.define(auto_attribs=True)
 class TrackerStatus:

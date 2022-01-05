@@ -9,7 +9,7 @@ from typing import TYPE_CHECKING, Any, List, Optional
 
 import requests
 
-from .datatypes import Device, Tracker, TrackerData, User
+from .datatypes import Device, Tracker, TrackerConfig, TrackerData, TrackerStatus, User
 from .exceptions import HttpException
 from .url_provider import UrlProvider
 
@@ -207,3 +207,29 @@ class Client:
             not_after_ts = res[-1].datetime.timestamp().__floor__()
 
         return res
+
+    def get_tracker_status(self, device: Tracker) -> TrackerStatus:
+        """
+        Get the current status of a given tracker.
+
+        :param device: The tracker instance whose status is queried.
+        :type device: Tracker
+
+        :return: Current status of the tracker
+        :rtype: TrackerStatus
+        """
+        data = self._query(self._url_provider.tracker_status(device_id=device.id))
+        return TrackerStatus(**data)
+
+    def get_tracker_config(self, device: Tracker) -> TrackerConfig:
+        """
+        Get the current configuration of a given tracker.
+
+        :param device: The tracker instance whose configuration is queried.
+        :type device: Tracker
+
+        :return: Current config of the tracker
+        :rtype: TrackerConfig
+        """
+        data = self._query(self._url_provider.tracker_config(device_id=device.id))
+        return TrackerConfig(**data)

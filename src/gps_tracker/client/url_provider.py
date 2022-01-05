@@ -110,3 +110,11 @@ class UrlProvider:
         args_str = f"?{'&'.join(args)}" if args else ""
 
         return self._form_url(f"devices/{device_id}/tracker_data/{args_str}")
+
+    def tracker_status(self, device_id: int) -> str:
+        """Form the URL to get the current tracker status."""
+        return self._form_url(f"devices/{device_id}/tracker_status/")
+
+    def tracker_config(self, device_id: int) -> str:
+        """Form the URL to get the current tracker config."""
+        return self._form_url(f"devices/{device_id}/tracker_config/")
