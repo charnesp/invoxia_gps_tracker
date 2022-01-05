@@ -138,7 +138,13 @@ You may retrieve only trackers with
 
 .. code-block:: python
 
-    trackers: List[Tracker] = client.get_devices(kind='tracker')
+    trackers: List[Device] = client.get_devices(kind='tracker')
+
+or with its alias which is typed to return ``List[Tracker]``
+
+.. code-block:: python
+
+    trackers: List[Tracker] = client.get_trackers()
 
 Get tracker location
 ~~~~~~~~~~~~~~~~~~~~
