@@ -146,6 +146,7 @@ class TrackerIcon(enum.Enum):
     CARPARK = 42
     ANTENNA = 43
     HEALTH = 44
+    WASHER = 45
     KEYS = 46
     TV = 47
     PHONE = 48  # 48
