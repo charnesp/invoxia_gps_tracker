@@ -19,13 +19,14 @@ if TYPE_CHECKING:
 class AsyncClient:
     """Asynchronous client for Invoxia API."""
 
-    def __init__(self, config: Config):
+    def __init__(self, config: Config, session: Optional[aiohttp.ClientSession] = None):
         """Initialize the Client with given configuration."""
         self._cfg: Config = config
 
         self._url_provider = UrlProvider(api_url=config.api_url)
 
-        self._session: Optional[aiohttp.ClientSession] = None
+        self._session: Optional[aiohttp.ClientSession] = session
+        self._external_session = session is not None
 
     async def __aenter__(self):
         """Enter context manager"""
@@ -39,11 +40,14 @@ class AsyncClient:
     async def _get_session(self) -> aiohttp.ClientSession:
         """Open the session if needed and return it."""
         if self._session is None:
-            auth = aiohttp.BasicAuth(
-                login=self._cfg.username, password=self._cfg.password
-            )
+            auth = self.get_auth(self._cfg)
             self._session = aiohttp.ClientSession(auth=auth)
         return self._session
+
+    @classmethod
+    def get_auth(cls, config: Config) -> aiohttp.BasicAuth:
+        """Form the authentication instance associated to a config."""
+        return aiohttp.BasicAuth(login=config.username, password=config.password)
 
     async def _query(self, url: str) -> Any:
         """Query the API asynchronously and return the decoded JSON response."""
@@ -70,7 +74,7 @@ class AsyncClient:
 
     async def close(self):
         """Close current session."""
-        if self._session is not None:
+        if self._session is not None and not self._external_session:
             await self._session.close()
 
     async def get_user(self, user_id: int) -> User:

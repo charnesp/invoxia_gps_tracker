@@ -3,6 +3,7 @@ import asyncio
 from datetime import datetime
 from typing import List
 
+import aiohttp
 import pytest
 
 from gps_tracker.client.asynchronous import AsyncClient
@@ -62,3 +63,15 @@ async def test_get_tracker_data(async_client: AsyncClient):
     )
 
     assert len(results[0]) <= 21
+
+
+@pytest.mark.asyncio
+async def test_async_client_external_session(config_authenticated):
+    """Test async client with provided session."""
+    auth = AsyncClient.get_auth(config_authenticated)
+    session = aiohttp.ClientSession(auth=auth)
+
+    async with AsyncClient(config_authenticated, session) as client:
+        await client.get_devices()
+
+    await session.close()
