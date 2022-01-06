@@ -2,6 +2,12 @@
 Changelog
 =========
 
+0.6.0
+-----
+
+- Add the possibility to provide a aiohttp.ClientSession instance to
+  AsyncClient.
+
 0.5.0
 -----
 
