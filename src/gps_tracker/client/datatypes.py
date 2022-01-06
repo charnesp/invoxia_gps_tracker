@@ -8,7 +8,17 @@ from __future__ import annotations
 import enum
 import uuid
 from datetime import datetime
-from typing import Any, Dict, Iterable, List, Optional, Type
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Dict,
+    Iterable,
+    List,
+    Mapping,
+    Optional,
+    Type,
+    TypeVar,
+)
 
 from .exceptions import UnknownAnswerScheme, UnknownDeviceType
 
@@ -17,6 +27,27 @@ try:
 except ModuleNotFoundError:
     # Handle attrs<21.3.0
     import attr as attrs  # type: ignore[no-redef]
+
+if TYPE_CHECKING:
+    T = TypeVar("T")  # pylint: disable=invalid-name
+
+
+def form(cls: Type[T], data: Mapping[str, Any]) -> T:
+    """Form an object based on arguments given in mapping."""
+    try:
+        obj = cls(**data)
+    except TypeError as err:
+        if "unexpected keyword argument" in str(err):
+            attributes = attrs.fields(cls)
+            subdata = {
+                key: data[key]
+                for key in [attr.name for attr in attributes]
+                if key in data
+            }
+            return form(cls, subdata)
+
+        raise UnknownAnswerScheme(data, err.args[0], cls) from err
+    return obj
 
 
 def _date_converter(val: Optional[str]) -> Optional[datetime]:
@@ -84,10 +115,7 @@ class Device:
         if device_data["type"] not in Device._registry:
             raise UnknownDeviceType(device_data)
 
-        try:
-            return Device._registry[device_data.pop("type")](**device_data)
-        except TypeError as err:
-            raise UnknownAnswerScheme(device_data, err.args[0]) from err
+        return form(Device._registry[device_data.pop("type")], device_data)
 
     @classmethod
     def get_types(cls) -> Iterable[str]:
@@ -319,18 +347,12 @@ class TrackerData:
 
 def _tracker_config_converter(val: Dict[str, Any]) -> TrackerConfig:
     """Converter to form a TrackerConfig from its JSON representation."""
-    try:
-        return TrackerConfig(**val)
-    except TypeError as err:
-        raise UnknownAnswerScheme(val, err.args[0]) from err
+    return form(TrackerConfig, val)
 
 
 def _tracker_status_converter(val: Dict[str, Any]) -> TrackerStatus:
     """Converter to form a TrackerStatus from its JSON representation."""
-    try:
-        return TrackerStatus(**val)
-    except TypeError as err:
-        raise UnknownAnswerScheme(val, err.args[0]) from err
+    return form(TrackerStatus, val)
 
 
 class Tracker(Device, dtype="tracker"):

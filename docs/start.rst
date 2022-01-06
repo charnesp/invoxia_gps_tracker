@@ -24,8 +24,7 @@ account to work. You may pass them as following:
 
     import gps_tracker
 
-    cfg = gps_tracker.Config(username="myusername",
-                             password="mypassword")
+    cfg = gps_tracker.Config(username="myusername", password="mypassword")
     client = gps_tracker.Client(cfg)
 
 
@@ -46,7 +45,7 @@ To only retrieve trackers, you may filter the query:
 
 .. code-block:: python
 
-    trackers: List[gps_tracker.Tracker] = client.get_devices(kind='tracker')
+    trackers: List[gps_tracker.Tracker] = client.get_devices(kind="tracker")
 
 See the :doc:`Module Reference <api/modules>` for details regarding attributes
 of :class:`Android <gps_tracker.client.datatypes.Android>`, :class:`iPhone <gps_tracker.client.datatypes.Iphone>`

@@ -9,8 +9,16 @@ from typing import TYPE_CHECKING, Any, List, Optional
 
 import requests
 
-from .datatypes import Device, Tracker, TrackerConfig, TrackerData, TrackerStatus, User
-from .exceptions import HttpException, UnknownAnswerScheme
+from .datatypes import (
+    Device,
+    Tracker,
+    TrackerConfig,
+    TrackerData,
+    TrackerStatus,
+    User,
+    form,
+)
+from .exceptions import ApiConnectionError, HttpException
 from .url_provider import UrlProvider
 
 if TYPE_CHECKING:
@@ -35,7 +43,10 @@ class Client:
         """Query the API synchronously and return the decoded JSON response."""
 
         # Run the request
-        request = self._session.get(url=url)
+        try:
+            request = self._session.get(url=url)
+        except requests.ConnectionError as err:
+            raise ApiConnectionError() from err
 
         # Extract JSON answer if possible
         json_answer = None
@@ -50,7 +61,13 @@ class Client:
             raise exception(json_answer=json_answer)
 
         # Raise unknown exception if required
-        request.raise_for_status()
+        try:
+            request.raise_for_status()
+        except requests.HTTPError as err:
+            exception_class = HttpException.get_default()
+            if exception_class is not None:
+                raise exception_class(json_answer=json_answer) from err
+            raise err
 
         return json_answer
 
@@ -63,17 +80,9 @@ class Client:
 
         :return: User instance associated to given ID
         :rtype: User
-
-        :raise UnauthorizedQuery: Credentials are invalid
-        :raise ForbiddenQuery: User of given ID is not linked to
-            current account
-        :raise requests.HTTPError: Unexpected HTTP error during API call
         """
         data = self._query(self._url_provider.user(user_id))
-        try:
-            return User(**data)
-        except TypeError as err:
-            raise UnknownAnswerScheme(data, err.args[0]) from err
+        return form(User, data)
 
     def get_users(self) -> List[User]:
         """
@@ -85,18 +94,9 @@ class Client:
 
         :return: List of User instances associated to account
         :rtype: List[User]
-
-        :raise UnauthorizedQuery: Credentials are invalid
-        :raise requests.HTTPError: Unexpected HTTP error during API call
         """
         data = self._query(self._url_provider.users())
-        users: List[User] = []
-        for item in data:
-            try:
-                users.append(User(**item))
-            except TypeError as err:
-                raise UnknownAnswerScheme(item, err.args[0]) from err
-        return users
+        return [form(User, item) for item in data]
 
     def get_device(self, device_id: int) -> Device:
         """
@@ -107,11 +107,6 @@ class Client:
 
         :return: Device instance of given id
         :rtype: Device
-
-        :raise UnauthorizedQuery: Credentials are invalid
-        :raise ForbiddenQuery: Device of given ID is not linked to
-            current account
-        :raise requests.HTTPError: Unexpected HTTP error during API call
         """
 
         data = self._query(self._url_provider.device(device_id))
@@ -130,10 +125,6 @@ class Client:
 
         :return: List of retrieved devices
         :rtype: List[Device]
-
-        :raise UnauthorizedQuery: Credentials are invalid
-        :raise requests.HTTPError: Unexpected HTTP error during API call
-        :raise KeyError: Undefined kind requested
         """
         data = self._query(self._url_provider.devices(kind=kind))
         return [Device.get(item) for item in data]
@@ -144,9 +135,6 @@ class Client:
 
         :return: Tracker devices associated to current account
         :rtype: List[Tracker]
-
-        :raise UnauthorizedQuery: Credentials are invalid
-        :raise requests.HTTPError: Unexpected HTTP error during API call
         """
         data = self._query(self._url_provider.devices(kind="tracker"))
         trackers: List[Tracker] = []
@@ -181,12 +169,6 @@ class Client:
 
         :return: List of extracted locations
         :rtype: List[TrackerData]
-
-        :raise UnauthorizedQuery: Credentials are invalid
-        :raise ForbiddenQuery: provided Device is not linked to
-            current account (should not happen if Device was obtained
-            with :meth:`get_devices`).
-        :raise requests.HTTPError: Unexpected HTTP error during API call
         """
         not_before_ts: Optional[int] = (
             None if not_before is None else not_before.timestamp().__ceil__()
@@ -213,10 +195,8 @@ class Client:
             # Pop returned results one by one and stop if max_count is reached.
             while len(data) > 0:
                 tracker_data = data.pop(0)
-                try:
-                    res.append(TrackerData(**tracker_data))
-                except TypeError as err:
-                    raise UnknownAnswerScheme(tracker_data, err.args[0]) from err
+                res.append(form(TrackerData, tracker_data))
+
                 max_count -= 1
                 if max_count <= 0:
                     break
@@ -237,10 +217,7 @@ class Client:
         :rtype: TrackerStatus
         """
         data = self._query(self._url_provider.tracker_status(device_id=device.id))
-        try:
-            return TrackerStatus(**data)
-        except TypeError as err:
-            raise UnknownAnswerScheme(data, err.args[0]) from err
+        return form(TrackerStatus, data)
 
     def get_tracker_config(self, device: Tracker) -> TrackerConfig:
         """
@@ -253,7 +230,4 @@ class Client:
         :rtype: TrackerConfig
         """
         data = self._query(self._url_provider.tracker_config(device_id=device.id))
-        try:
-            return TrackerConfig(**data)
-        except TypeError as err:
-            raise UnknownAnswerScheme(data, err.args[0]) from err
+        return form(TrackerConfig, data)

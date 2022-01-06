@@ -16,12 +16,14 @@ The use of each client is illustrated in the following example:
 
     from gps_tracker import AsyncClient, Client, Config
 
+
     def main(config):
         """Use of synchronous client."""
         client = Client(cfg)
 
         users = client.get_users()
         return users
+
 
     async def async_main(config):
         """Use of asynchronous client."""
@@ -30,6 +32,7 @@ The use of each client is illustrated in the following example:
             users = await client.get_users()
 
         return users
+
 
     async def async_main_nocontext(config):
         """Use of async client without context."""
@@ -40,9 +43,9 @@ The use of each client is illustrated in the following example:
         client.close()
         return users
 
+
     if __name__ == "__main__":
-        cfg = Config(username="myusername",
-                     password="mypassword")
+        cfg = Config(username="myusername", password="mypassword")
 
         users_sync = main(cfg)
         users_async1 = await async_main(cfg)
@@ -138,7 +141,7 @@ You may retrieve only trackers with
 
 .. code-block:: python
 
-    trackers: List[Device] = client.get_devices(kind='tracker')
+    trackers: List[Device] = client.get_devices(kind="tracker")
 
 or with its alias which is typed to return ``List[Tracker]``
 
@@ -163,9 +166,38 @@ the maximum count of locations to return:
 
     locations: List[TrackerData] = client.get_locations(
         tracker,
-        not_before = datetime.datetime(year=2021, month=10, day=8),
-        not_after = datetime.datetime(year=2021, month 12, day=31),
-        max_count = 50)
+        not_before=datetime.datetime(year=2021, month=10, day=8),
+        not_after=datetime.datetime(year=2021, month=12, day=31),
+        max_count=50,
+    )
 
 Note that one API query returns up to 20 locations.
 Asking for more than that will thus be slower.
+
+Exceptions
+----------
+
+All client methods which interrogate the Invoxia™ API can return any of
+the following :mod:`exceptions <gps_tracker.client.exceptions>` which all derive
+from the base exception :class:`GpsTrackerException <gps_tracker.client.exceptions.GpsTrackerException>`:
+
+- :class:`ApiConnectionError <gps_tracker.client.exceptions.ApiConnectionError>`:
+  Error raised during the connection to the API endpoint (failed DNS lookup, SSL issue,
+  internet connection not available, ...).
+- :class:`UnknownAnswerScheme <gps_tracker.client.exceptions.UnknownAnswerScheme>`:
+  The data returned by the API does not match expected content. Please open an issue
+  is you face this exception so that the data scheme can be updated.
+- :class:`UnknownDeviceType <gps_tracker.client.exceptions.UnknownDeviceType>`:
+  A device of unknown type is linked to your account. Please open an issue if you
+  face this exception so that the new kind of device can be supported by ``gps_tracker``.
+- :class:`UnauthorizedQuery <gps_tracker.client.exceptions.UnauthorizedQuery>`:
+  Your credentials are incorrect.
+- :class:`ForbiddenQuery <gps_tracker.client.exceptions.ForbiddenQuery>`:
+  You are correctly authenticated but you are requesting data for which you do not
+  have the permissions.
+- :class:`NoContentQuery <gps_tracker.client.exceptions.NoContentQuery>`:
+  The server does not have any data for your request. Happens mainly when asking
+  for tracker-specific data on a non-tracker device.
+- :class:`FailedQuery <gps_tracker.client.exceptions.FailedQuery>`:
+  The server returned an error code which does not correspond to any previous
+  exception.

@@ -9,7 +9,11 @@ from typing import Any, Dict, List, Optional, Type, Union
 _homepage: str = metadata.metadata("gps_tracker")["Home-page"]
 
 
-class UnknownDeviceType(Exception):
+class GpsTrackerException(Exception):
+    """Base class for gps-tracker exceptions."""
+
+
+class UnknownDeviceType(GpsTrackerException):
     """Exception raised when a device of unknown type is found."""
 
     def __init__(self, device_data: Dict[str, Any]):
@@ -24,10 +28,10 @@ Obfuscate any sensitive data by replacing letters by 'a' and digits by '0' if ne
         )
 
 
-class UnknownAnswerScheme(Exception):
+class UnknownAnswerScheme(GpsTrackerException):
     """Exception raised when API answer cannot be interpreted."""
 
-    def __init__(self, json_data, message):
+    def __init__(self, json_data, message, cls):
         """Store json and error message"""
         self.json_data = json_data
         self.message = message
@@ -36,17 +40,22 @@ class UnknownAnswerScheme(Exception):
 It appears that one of your devices has fields which are not currently recognized.
 Please open an issue at {_homepage} with the following content:
 {json.dumps(json_data, indent=4)}
-{message}
+{message} when instantiating {cls}.
 Obfuscate any sensitive data by replacing letters by 'a' and digits by '0' if needed."""
         )
 
 
-class HttpException(Exception):
+class ApiConnectionError(GpsTrackerException):
+    """Exception raised if connection error occurs during API call."""
+
+
+class HttpException(GpsTrackerException):
     """Base class for HTTP exceptions."""
 
     _registry: Dict[int, Type[HttpException]] = {}
+    _default: Optional[Type[HttpException]] = None
 
-    def __init_subclass__(cls, code: Optional[int] = None):
+    def __init_subclass__(cls, code: Optional[int] = None, default: bool = False):
         """Register subclass with its associated HTTP code."""
         if code is not None:
             if code not in HttpException._registry:
@@ -55,6 +64,8 @@ class HttpException(Exception):
                 raise Exception(
                     f"Two subclasses defined " f"for HttpException with {code=}."
                 )
+        if default:
+            HttpException._default = cls
 
     @staticmethod
     def get(code: int) -> Optional[Type[HttpException]]:
@@ -70,7 +81,12 @@ class HttpException(Exception):
             return HttpException._registry[code]
         return None
 
-    def message(self) -> Optional[str]:  # pylint: disable=no-self-use
+    @staticmethod
+    def get_default() -> Optional[Type[HttpException]]:
+        """Return the subclass declared as default."""
+        return HttpException._default
+
+    def _message(self) -> Optional[str]:  # pylint: disable=no-self-use
         """Define a specific message for the subclass"""
         return None
 
@@ -81,14 +97,14 @@ class HttpException(Exception):
         self.json_answer: Union[Dict, List, None] = json_answer
 
         if msg is None:
-            msg = self.message()  # pylint: disable=assignment-from-none
+            msg = self._message()  # pylint: disable=assignment-from-none
         super().__init__(msg)
 
 
 class UnauthorizedQuery(HttpException, code=401):
     """Exception raised if credentials are incorrect."""
 
-    def message(self) -> Optional[str]:
+    def _message(self) -> Optional[str]:
         """Return the "detail" message if provided by the API."""
 
         if (
@@ -103,7 +119,7 @@ class UnauthorizedQuery(HttpException, code=401):
 class ForbiddenQuery(HttpException, code=403):
     """Exception raised when an API query is forbidden with current credentials."""
 
-    def message(self) -> Optional[str]:
+    def _message(self) -> Optional[str]:
         """Define message for forbidden queries."""
         return "You are not allowed to perform the attempted query."
 
@@ -111,6 +127,14 @@ class ForbiddenQuery(HttpException, code=403):
 class NoContentQuery(HttpException, code=204):
     """Exception raised when API has no content to return."""
 
-    def message(self) -> Optional[str]:
+    def _message(self) -> Optional[str]:
         """Define message for no-content queries."""
         return "No content is associated to this query."
+
+
+class FailedQuery(HttpException, default=True):
+    """Exception raised for any erroneous status code."""
+
+    def _message(self) -> Optional[str]:
+        """Define message for default exception."""
+        return "Query failed with unexpected exception."

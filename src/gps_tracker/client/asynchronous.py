@@ -8,8 +8,16 @@ from typing import TYPE_CHECKING, Any, List, Optional
 
 import aiohttp
 
-from .datatypes import Device, Tracker, TrackerConfig, TrackerData, TrackerStatus, User
-from .exceptions import HttpException, UnknownAnswerScheme
+from .datatypes import (
+    Device,
+    Tracker,
+    TrackerConfig,
+    TrackerData,
+    TrackerStatus,
+    User,
+    form,
+)
+from .exceptions import ApiConnectionError, HttpException
 from .url_provider import UrlProvider
 
 if TYPE_CHECKING:
@@ -37,7 +45,7 @@ class AsyncClient:
         """Exit context manager."""
         await self.close()
 
-    async def _get_session(self) -> aiohttp.ClientSession:
+    def _get_session(self) -> aiohttp.ClientSession:
         """Open the session if needed and return it."""
         if self._session is None:
             auth = self.get_auth(self._cfg)
@@ -51,26 +59,34 @@ class AsyncClient:
 
     async def _query(self, url: str) -> Any:
         """Query the API asynchronously and return the decoded JSON response."""
-
         # Run the request
-        session = await self._get_session()
-        async with session.get(url) as resp:
-            # Extract JSON answer if possible
-            json_answer = None
-            try:
-                json_answer = await resp.json()
-            except aiohttp.ContentTypeError:
-                pass
+        session = self._get_session()
+        try:
+            async with session.get(url) as resp:
+                # Extract JSON answer if possible
+                json_answer = None
+                try:
+                    json_answer = await resp.json()
+                except aiohttp.ContentTypeError:
+                    pass
 
-            # Raise known exception if required
-            exception = HttpException.get(resp.status)
-            if exception is not None:
-                raise exception(json_answer=json_answer)
+                # Raise known exception if required
+                exception = HttpException.get(resp.status)
+                if exception is not None:
+                    raise exception(json_answer=json_answer)
 
-            # Raise unknown exception if required
-            resp.raise_for_status()
+                # Raise unknown exception if required
+                try:
+                    resp.raise_for_status()
+                except aiohttp.ClientResponseError as err:
+                    exception_class = HttpException.get_default()
+                    if exception_class is not None:
+                        raise exception_class(json_answer=json_answer) from err
+                    raise err
 
             return json_answer
+        except aiohttp.ClientConnectionError as err:
+            raise ApiConnectionError() from err
 
     async def close(self):
         """Close current session."""
@@ -86,18 +102,9 @@ class AsyncClient:
 
         :return: User instance associated to given ID
         :rtype: User
-
-        :raise UnauthorizedQuery: Credentials are invalid
-        :raise ForbiddenQuery: User of given ID is not linked to
-            current account
-        :raise aiohttp.ClientResponseError: Unexpected HTTP error
-            during API call
         """
         data = await self._query(self._url_provider.user(user_id))
-        try:
-            return User(**data)
-        except TypeError as err:
-            raise UnknownAnswerScheme(data, err.args[0]) from err
+        return form(User, data)
 
     async def get_users(self) -> List[User]:
         """
@@ -109,19 +116,9 @@ class AsyncClient:
 
         :return: List of User instances associated to account
         :rtype: List[User]
-
-        :raise UnauthorizedQuery: Credentials are invalid
-        :raise aiohttp.ClientResponseError: Unexpected HTTP error
-            during API call
         """
         data = await self._query(self._url_provider.users())
-        users: List[User] = []
-        for item in data:
-            try:
-                users.append(User(**item))
-            except TypeError as err:
-                raise UnknownAnswerScheme(item, err.args[0]) from err
-        return users
+        return [form(User, item) for item in data]
 
     async def get_device(self, device_id: int) -> Device:
         """
@@ -132,12 +129,6 @@ class AsyncClient:
 
         :return: Device instance of given id
         :rtype: Device
-
-        :raise UnauthorizedQuery: Credentials are invalid
-        :raise ForbiddenQuery: Device of given ID is not linked to
-            current account
-        :raise aiohttp.ClientResponseError: Unexpected HTTP error
-            during API call
         """
 
         data = await self._query(self._url_provider.device(device_id))
@@ -156,11 +147,6 @@ class AsyncClient:
 
         :return: List of retrieved devices
         :rtype: List[Device]
-
-        :raise UnauthorizedQuery: Credentials are invalid
-        :raise aiohttp.ClientResponseError: Unexpected HTTP error
-            during API call
-        :raise KeyError: Undefined kind requested
         """
         data = await self._query(self._url_provider.devices(kind=kind))
         return [Device.get(item) for item in data]
@@ -171,9 +157,6 @@ class AsyncClient:
 
         :return: Tracker devices associated to current account
         :rtype: List[Tracker]
-
-        :raise UnauthorizedQuery: Credentials are invalid
-        :raise requests.HTTPError: Unexpected HTTP error during API call
         """
         data = await self._query(self._url_provider.devices(kind="tracker"))
         trackers: List[Tracker] = []
@@ -208,13 +191,6 @@ class AsyncClient:
 
         :return: List of extracted locations
         :rtype: List[TrackerData]
-
-        :raise UnauthorizedQuery: Credentials are invalid
-        :raise ForbiddenQuery: provided Device is not linked to
-            current account (should not happen if Device was obtained
-            with :meth:`get_devices`).
-        :raise aiohttp.ClientResponseError: Unexpected HTTP error
-            during API call
         """
         not_before_ts: Optional[int] = (
             None if not_before is None else not_before.timestamp().__ceil__()
@@ -241,10 +217,8 @@ class AsyncClient:
             # Pop returned results one by one and stop if max_count is reached.
             while len(data) > 0:
                 tracker_data = data.pop(0)
-                try:
-                    res.append(TrackerData(**tracker_data))
-                except TypeError as err:
-                    raise UnknownAnswerScheme(tracker_data, err.args[0]) from err
+                res.append(form(TrackerData, tracker_data))
+
                 max_count -= 1
                 if max_count <= 0:
                     break
@@ -265,10 +239,7 @@ class AsyncClient:
         :rtype: TrackerStatus
         """
         data = await self._query(self._url_provider.tracker_status(device_id=device.id))
-        try:
-            return TrackerStatus(**data)
-        except TypeError as err:
-            raise UnknownAnswerScheme(data, err.args[0]) from err
+        return form(TrackerStatus, data)
 
     async def get_tracker_config(self, device: Tracker) -> TrackerConfig:
         """
@@ -281,7 +252,4 @@ class AsyncClient:
         :rtype: TrackerConfig
         """
         data = await self._query(self._url_provider.tracker_config(device_id=device.id))
-        try:
-            return TrackerConfig(**data)
-        except TypeError as err:
-            raise UnknownAnswerScheme(data, err.args[0]) from err
+        return form(TrackerConfig, data)
