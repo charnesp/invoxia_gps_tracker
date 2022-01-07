@@ -45,7 +45,7 @@ class AsyncClient:
         """Exit context manager."""
         await self.close()
 
-    def _get_session(self) -> aiohttp.ClientSession:
+    async def _get_session(self) -> aiohttp.ClientSession:
         """Open the session if needed and return it."""
         if self._session is None:
             auth = self.get_auth(self._cfg)
@@ -60,7 +60,7 @@ class AsyncClient:
     async def _query(self, url: str) -> Any:
         """Query the API asynchronously and return the decoded JSON response."""
         # Run the request
-        session = self._get_session()
+        session = await self._get_session()
         try:
             async with session.get(url) as resp:
                 # Extract JSON answer if possible
