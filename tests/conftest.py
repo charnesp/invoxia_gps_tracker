@@ -5,11 +5,11 @@ import json
 import os
 import pathlib
 import socket
-from distutils.version import LooseVersion
 from importlib.metadata import version
 
 import pytest
 import pytest_socket
+from packaging.version import Version
 
 from gps_tracker.client.asynchronous import AsyncClient
 from gps_tracker.client.config import Config
@@ -48,7 +48,7 @@ async def async_client(config_authenticated: Config):  # pylint: disable=W0621
     client = AsyncClient(config_authenticated)
     yield client
     await client.close()
-    if LooseVersion(version("aiohttp")) < LooseVersion("4.0.0"):
+    if Version(version("aiohttp")) < Version("4.0.0"):
         # Up to version 4.0 of aiohttp, a client.close() does not
         # wait for the SSL transport to close.
         # This causes issues with pytest execution where the event_loop is closed
