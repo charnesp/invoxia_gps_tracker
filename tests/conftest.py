@@ -34,6 +34,12 @@ def config_authenticated():
     return Config(username=username, password=password)
 
 
+@pytest.fixture(scope="module")
+def config_dummy():
+    """Form Config is credential in environment."""
+    return Config(username="dummy-user", password="******")
+
+
 @pytest.fixture(scope="session")
 def event_loop():
     """Create an instance of the default event loop for each test case."""
@@ -43,9 +49,9 @@ def event_loop():
 
 
 @pytest.fixture(scope="module", name="async_client")
-async def async_client(config_authenticated: Config):  # pylint: disable=W0621
+async def async_client(config_dummy: Config):  # pylint: disable=W0621
     """Instantiate an asynchronous client."""
-    client = AsyncClient(config_authenticated)
+    client = AsyncClient(config_dummy)
     yield client
     await client.close()
     if Version(version("aiohttp")) < Version("4.0.0"):
@@ -58,9 +64,9 @@ async def async_client(config_authenticated: Config):  # pylint: disable=W0621
 
 
 @pytest.fixture(scope="module", name="sync_client")
-def sync_client(config_authenticated: Config):  # pylint: disable=W0621
+def sync_client(config_dummy: Config):  # pylint: disable=W0621
     """Instantiate a synchronous client."""
-    return Client(config_authenticated)
+    return Client(config_dummy)
 
 
 @pytest.fixture(scope="module")

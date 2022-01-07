@@ -14,9 +14,9 @@ from tests.helpers import AiohttpMock
 
 
 @pytest.mark.asyncio
-async def test_async_context(config_authenticated):
+async def test_async_context(config_dummy):
     """Test async client with context manager."""
-    async with AsyncClient(config_authenticated):
+    async with AsyncClient(config_dummy):
         pass
 
 
@@ -158,12 +158,12 @@ async def test_get_tracker_data(async_client: AsyncClient):
 
 
 @pytest.mark.asyncio
-async def test_async_client_external_session(config_authenticated):
+async def test_async_client_external_session(config_dummy):
     """Test async client with provided session."""
-    auth = AsyncClient.get_auth(config_authenticated)
+    auth = AsyncClient.get_auth(config_dummy)
     session = aiohttp.ClientSession(auth=auth)
 
-    async with AsyncClient(config_authenticated, session) as client:
+    async with AsyncClient(config_dummy, session) as client:
         with AiohttpMock("200_devices.json"):
             await client.get_devices()
 
