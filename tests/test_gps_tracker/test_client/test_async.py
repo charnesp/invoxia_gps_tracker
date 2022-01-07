@@ -112,6 +112,10 @@ async def test_get_devices_type(async_client: AsyncClient):
     with pytest.raises(KeyError):
         await async_client.get_devices(kind="undefined_kind")
 
+    with AiohttpMock("204_tracker_status-invalid.json"):
+        with pytest.raises(gps_tracker.client.exceptions.NoContentQuery):
+            await async_client.get_tracker_status(android_devices[0])
+
 
 @pytest.mark.asyncio
 async def test_get_tracker_data(async_client: AsyncClient):
@@ -139,8 +143,8 @@ async def test_get_tracker_data(async_client: AsyncClient):
             async_client.get_locations(tracker, max_count=23),
             async_client.get_locations(
                 tracker,
-                not_before=datetime.datetime(2018, 8, 4, 21, 45, 25),
-                not_after=datetime.datetime(2021, 12, 12, 12, 13, 24),
+                not_before=datetime.datetime.fromtimestamp(1533411925),
+                not_after=datetime.datetime.fromtimestamp(1639307604),
             ),
             async_client.get_tracker_status(tracker),
             async_client.get_tracker_config(tracker),
@@ -192,3 +196,22 @@ async def test_no_connection(async_client: AsyncClient):
     with AiohttpMock("404_test_except-AsyncClientConnectionError.json"):
         with pytest.raises(gps_tracker.client.exceptions.ApiConnectionError):
             await async_client._query("https://labs.invoxia.io/test/")
+
+
+@pytest.mark.asyncio
+async def test_answer_with_unexpected_field(async_client: AsyncClient):
+    """Test behaviour with unhandled field returned by API."""
+    with AiohttpMock("200_users_unknown-field.json"):
+        users: List[User] = await async_client.get_users()
+
+    assert len(users) == 1
+    assert users[0].id == 768046
+    assert len(users[0].profiles) == 1
+
+
+@pytest.mark.asyncio
+async def test_answer_with_missing_field(async_client: AsyncClient):
+    """Test behaviour with unhandled field returned by API."""
+    with pytest.raises(gps_tracker.client.exceptions.UnknownAnswerScheme):
+        with AiohttpMock("200_users_missing-field.json"):
+            await async_client.get_users()

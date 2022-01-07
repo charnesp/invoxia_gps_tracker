@@ -4,16 +4,12 @@ import uuid
 
 import pytest
 
-from gps_tracker.client.config import Config
 from gps_tracker.client.datatypes import Device
 from gps_tracker.client.exceptions import (
-    ForbiddenQuery,
     HttpException,
-    NoContentQuery,
     UnauthorizedQuery,
     UnknownDeviceType,
 )
-from gps_tracker.client.synchronous import Client
 
 
 def test_unknown_device_type():
@@ -67,38 +63,6 @@ def test_known_device_type_iphone():
         pytest.fail("UnknownDeviceType raised unexpectedly.")
 
 
-@pytest.mark.skip()
-def test_unauthorized_query():
-    """Check exception raised with incorrect credentials."""
-
-    cfg = Config("", "")
-    client = Client(cfg)
-
-    with pytest.raises(UnauthorizedQuery):
-        client.get_users()
-
-
-@pytest.mark.skip()
-def test_forbidden_query(sync_client: Client):
-    """Check exception raised with forbidden query."""
-
-    with pytest.raises(ForbiddenQuery):
-        sync_client.get_user(1)
-
-
-@pytest.mark.skip()
-def test_empty_query(sync_client: Client):
-    """Test exception raised with no-content query."""
-
-    android_devices = sync_client.get_devices(kind="android")
-    with pytest.raises(NoContentQuery):
-        # Instruct mypy to ignore arg-type discrepancy as the
-        # type enforcement is here to prevent NoContentQuery
-        # from being raised.
-        sync_client.get_tracker_status(android_devices[0])  # type: ignore[arg-type]
-
-
-@pytest.mark.skip()
 def test_subclass():
     """Test subclassing HttpException without given code."""
 
@@ -106,7 +70,6 @@ def test_subclass():
         """Dummy class."""
 
 
-@pytest.mark.skip()
 def test_double_subclass():
     """Test subclassing HttpException twice with the same code."""
 
@@ -119,8 +82,7 @@ def test_double_subclass():
             """Dummy class."""
 
 
-@pytest.mark.skip()
 def test_instantiate_without_msg():
-    """Test exception instantiation wi no message."""
+    """Test exception instantiation with no message."""
 
     UnauthorizedQuery()

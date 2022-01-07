@@ -105,6 +105,10 @@ def test_get_devices_type(sync_client: Client):
     with pytest.raises(KeyError):
         sync_client.get_devices(kind="undefined_kind")
 
+    with RequestsMock("204_tracker_status-invalid.json"):
+        with pytest.raises(gps_tracker.client.exceptions.NoContentQuery):
+            sync_client.get_tracker_status(android_devices[0])
+
 
 def test_get_tracker_data(sync_client: Client):
     """Test getting tracker locations."""
@@ -131,8 +135,8 @@ def test_get_tracker_data(sync_client: Client):
             sync_client.get_locations(tracker, max_count=23),
             sync_client.get_locations(
                 tracker,
-                not_before=datetime.datetime(2018, 8, 4, 21, 45, 25),
-                not_after=datetime.datetime(2021, 12, 12, 12, 13, 24),
+                not_before=datetime.datetime.fromtimestamp(1533411925),
+                not_after=datetime.datetime.fromtimestamp(1639307604),
             ),
             sync_client.get_tracker_status(tracker),
             sync_client.get_tracker_config(tracker),
