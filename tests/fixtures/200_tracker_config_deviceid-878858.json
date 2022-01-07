@@ -1,0 +1,5 @@
+{
+  "url": "https://labs.invoxia.io/devices/878858/tracker_config/",
+  "status": 200,
+  "content": "{\"mode\":\"6\",\"color\":0,\"icon\":19,\"notify_position\":true,\"notify_long_walk\":true,\"network\":\"lora\",\"network_region\":\"MOON\",\"network_config\":1,\"firmware_path\":\"http://developer.invoxia.com/update/tracker/update.pup\",\"board_name\":\"LWT1v2\",\"usage\":\"vehicle\",\"weight\":\"0.0\"}"
+}

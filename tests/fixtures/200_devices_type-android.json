@@ -1,0 +1,5 @@
+{
+  "url": "https://labs.invoxia.io/devices/?type=android",
+  "status": 200,
+  "content": "[{\"id\":222000,\"name\":\"MyPhone\",\"type\":\"android\",\"serial\":\"16770679-c231-431e-a512-084b148c8038\",\"created\":\"2020-01-06T19:19:03.000000Z\",\"timezone\":\"Pacific/Auckland\",\"version\":\"13.1.0\"}]"
+}

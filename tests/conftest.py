@@ -1,15 +1,24 @@
 """conftest.py for gps_tracker."""
 
 import asyncio
+import json
 import os
+import pathlib
+import socket
 from distutils.version import LooseVersion
 from importlib.metadata import version
 
 import pytest
+import pytest_socket
 
 from gps_tracker.client.asynchronous import AsyncClient
 from gps_tracker.client.config import Config
 from gps_tracker.client.synchronous import Client
+
+
+def pytest_runtest_setup():
+    allowed = None if hasattr(socket, "AF_UNIX") else ["127.0.0.1"]
+    pytest_socket.socket_allow_hosts(allowed=allowed, allow_unix_socket=True)
 
 
 @pytest.fixture(scope="module")
@@ -52,3 +61,11 @@ async def async_client(config_authenticated: Config):  # pylint: disable=W0621
 def sync_client(config_authenticated: Config):  # pylint: disable=W0621
     """Instantiate a synchronous client."""
     return Client(config_authenticated)
+
+
+@pytest.fixture(scope="module")
+def json_data(request, name: str):
+    """Loads a json file."""
+    path = pathlib.Path(request.fspath, "fixtures", name)
+    with path.open("r") as fp:
+        return json.load(fp)

@@ -1,0 +1,5 @@
+{
+  "url": "https://labs.invoxia.io/devices/?type=tracker",
+  "status": 200,
+  "content": "[{\"id\":878858,\"name\":\"MyTracker\",\"type\":\"tracker_01\",\"serial\":\"18b79eff372a6495\",\"created\":\"2020-05-11T16:15:40.175649Z\",\"version_build\":\"8d2ce7f\",\"timezone\":\"Pacific/Auckland\",\"version\":\"tracker_LWTv2-9.34.0-LoRa+Sigfox\",\"tracker_config\":{\"mode\":\"6\",\"color\":0,\"icon\":19,\"notify_position\":true,\"notify_long_walk\":true,\"network\":\"lora\",\"network_region\":\"EU\",\"network_config\":1,\"firmware_path\":\"http://developer.invoxia.com/update/tracker/update.pup\",\"board_name\":\"LWT1v2\",\"usage\":\"vehicle\"},\"tracker_status\":{\"battery\":58,\"begin_date\":\"2019-04-19T19:43:32.197349Z\",\"last_event\":\"2021-12-24T11:42:06.012000Z\",\"state\":\"online\",\"sub_end_date\":\"2023-02-28\",\"sub_state\":\"normal\",\"network_operator\":\"parrot\",\"stationary\":12}}]"
+}

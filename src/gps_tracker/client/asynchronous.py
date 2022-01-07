@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import datetime
+import json
 from typing import TYPE_CHECKING, Any, List, Optional
 
 import aiohttp
@@ -67,7 +68,7 @@ class AsyncClient:
                 json_answer = None
                 try:
                     json_answer = await resp.json()
-                except aiohttp.ContentTypeError:
+                except (aiohttp.ContentTypeError, json.decoder.JSONDecodeError):
                     pass
 
                 # Raise known exception if required
@@ -159,11 +160,7 @@ class AsyncClient:
         :rtype: List[Tracker]
         """
         data = await self._query(self._url_provider.devices(kind="tracker"))
-        trackers: List[Tracker] = []
-        for item in data:
-            device = Device.get(item)
-            if isinstance(device, Tracker):
-                trackers.append(device)
+        trackers: List[Tracker] = [Device.get(item) for item in data]  # type:ignore
         return trackers
 
     async def get_locations(

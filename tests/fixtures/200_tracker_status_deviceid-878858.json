@@ -1,0 +1,5 @@
+{
+  "url": "https://labs.invoxia.io/devices/878858/tracker_status/",
+  "status": 200,
+  "content": "{\"battery\":58,\"begin_date\":\"2019-04-19T19:43:32.197349Z\",\"last_event\":\"2021-12-24T11:42:06.012000Z\",\"state\":\"online\",\"sub_end_date\":\"2023-02-28\",\"sub_state\":\"normal\",\"network_operator\":\"parrot\",\"stationary\":12}"
+}

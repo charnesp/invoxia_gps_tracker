@@ -1,0 +1,5 @@
+{
+  "url": "https://labs.invoxia.io/devices/?type=iphone",
+  "status": 200,
+  "content": "[{\"id\":625235,\"name\":\"iThingy\",\"type\":\"iphone\",\"serial\":\"E30A4DAE-8DDB-4E4D-B877-3E63D64A920A\",\"created\":\"2020-06-05T23:28:33.293067Z\",\"timezone\":\"Pacific/Auckland\",\"version\":\"9.5.1.88141004\"}]"
+}
