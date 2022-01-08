@@ -2,6 +2,13 @@
 Changelog
 =========
 
+0.7.0
+-----
+
+- Revamp exception handling so that all calls to API derive from
+  :class:`GpsTrackerException <gps_tracker.client.exceptions.GpsTrackerException>`.
+- Rewrite all tests to not depend on actual API calls but mocked ones.
+
 0.6.0
 -----
 
