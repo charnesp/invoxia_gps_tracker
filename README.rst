@@ -18,6 +18,8 @@
 gps_tracker
 ===========
 
+    PROJECT IMPORTED FROM : https://gitlab.com/ezlo.picori/gps_tracker 
+    
     Unofficial client to retrieve location data from Invoxia™ GPS trackers.
 
 Invoxia_\™ is known for their GPS Trackers with long battery life which rely on the LoRa_ or SigFox_
